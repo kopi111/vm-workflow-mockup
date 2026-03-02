@@ -1627,16 +1627,34 @@
         // ---- Save / Publish / Approve / Reject ----
         function saveForm() {
             collectFormData();
+
+            // Validate NOC: require at least IP Address
+            if (currentStage === 4) {
+                if (!currentRequest.data.ipAddress || !currentRequest.data.ipAddress.trim()) {
+                    showToast('Please fill in at least the IP Address before saving NOC.', 'error');
+                    return;
+                }
+            }
+            // Validate SOC: require VDOM or at least one policy
+            if (currentStage === 5) {
+                const hasVdom = currentRequest.data.vdom && currentRequest.data.vdom.trim();
+                const hasPolicies = currentRequest.policies && currentRequest.policies.length > 0;
+                if (!hasVdom && !hasPolicies) {
+                    showToast('Please fill in VDOM or add at least one firewall policy before saving SOC.', 'error');
+                    return;
+                }
+            }
+
             updateRequest(currentRequest);
             if (currentStage === 4) {
                 showToast('NOC details saved. Moving to SOC...', 'success');
                 renderFlowBar();
-                setTimeout(() => goToStage(5), 800); // Auto-navigate to SOC
+                setTimeout(() => goToStage(5), 800);
                 return;
             } else if (currentStage === 5) {
                 showToast('SOC details saved. Moving to IOC Manager...', 'success');
                 renderFlowBar();
-                setTimeout(() => goToStage(6), 800); // Auto-navigate to IOC
+                setTimeout(() => goToStage(6), 800);
                 return;
             } else {
                 showToast('Draft saved', 'success');
@@ -1649,6 +1667,26 @@
         }
         function publishForm() {
             collectFormData();
+
+            // Validate: require at least one field filled before publishing
+            if (currentStage === 1) {
+                if (!currentRequest.data.appName || !currentRequest.data.appName.trim()) {
+                    showToast('Please fill in at least the Application Name before publishing.', 'error');
+                    return;
+                }
+            }
+            if (currentStage === 2) {
+                if (!currentRequest.data.hostname || !currentRequest.data.hostname.trim()) {
+                    showToast('Please fill in at least the Hostname before publishing.', 'error');
+                    return;
+                }
+            }
+            if (currentStage === 3) {
+                if (!currentRequest.data.hardware || !currentRequest.data.hardware.trim()) {
+                    showToast('Please fill in at least the Hardware field before publishing.', 'error');
+                    return;
+                }
+            }
 
             // IOC stage: check NOC+SOC saved
             if (currentStage === 6) {
