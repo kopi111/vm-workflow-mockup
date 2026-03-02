@@ -1274,13 +1274,12 @@
 
         // ---- NOC/SOC saved status helpers ----
         function isNOCSaved() {
-            if (!currentRequest || !currentRequest.data) return false;
-            // Check if at least IP address has been filled
-            return !!(currentRequest.data.ipAddress || currentRequest.data.vlanId || currentRequest.data.gateway);
+            if (!currentRequest) return false;
+            return !!currentRequest.nocSaved;
         }
         function isSOCSaved() {
-            if (!currentRequest || !currentRequest.data) return false;
-            return !!(currentRequest.data.vdom || (currentRequest.policies && currentRequest.policies.length > 0));
+            if (!currentRequest) return false;
+            return !!currentRequest.socSaved;
         }
         function updateIOCStatus() {
             const nocSaved = isNOCSaved();
@@ -1628,23 +1627,8 @@
         function saveForm() {
             collectFormData();
 
-            // Validate NOC: require at least IP Address
-            if (currentStage === 4) {
-                if (!currentRequest.data.ipAddress || !currentRequest.data.ipAddress.trim()) {
-                    showToast('Please fill in at least the IP Address before saving NOC.', 'error');
-                    return;
-                }
-            }
-            // Validate SOC: require VDOM or at least one policy
-            if (currentStage === 5) {
-                const hasVdom = currentRequest.data.vdom && currentRequest.data.vdom.trim();
-                const hasPolicies = currentRequest.policies && currentRequest.policies.length > 0;
-                if (!hasVdom && !hasPolicies) {
-                    showToast('Please fill in VDOM or add at least one firewall policy before saving SOC.', 'error');
-                    return;
-                }
-            }
-
+            if (currentStage === 4) currentRequest.nocSaved = true;
+            if (currentStage === 5) currentRequest.socSaved = true;
             updateRequest(currentRequest);
             if (currentStage === 4) {
                 showToast('NOC details saved. Moving to SOC...', 'success');
@@ -1667,26 +1651,6 @@
         }
         function publishForm() {
             collectFormData();
-
-            // Validate: require at least one field filled before publishing
-            if (currentStage === 1) {
-                if (!currentRequest.data.appName || !currentRequest.data.appName.trim()) {
-                    showToast('Please fill in at least the Application Name before publishing.', 'error');
-                    return;
-                }
-            }
-            if (currentStage === 2) {
-                if (!currentRequest.data.hostname || !currentRequest.data.hostname.trim()) {
-                    showToast('Please fill in at least the Hostname before publishing.', 'error');
-                    return;
-                }
-            }
-            if (currentStage === 3) {
-                if (!currentRequest.data.hardware || !currentRequest.data.hardware.trim()) {
-                    showToast('Please fill in at least the Hardware field before publishing.', 'error');
-                    return;
-                }
-            }
 
             // IOC stage: check NOC+SOC saved
             if (currentStage === 6) {
