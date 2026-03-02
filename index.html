@@ -1177,9 +1177,18 @@
                 }
 
                 let statusBadge;
+                // NOC/SOC show as active when IOC is the current stage
+                const nocSocActive = (s.id === 4 || s.id === 5) && currentRequest.currentStage === 6;
+
                 if (currentRequest.status === 'approved') {
                     statusBadge = '<span class="status-badge status-completed">Done</span>';
                     cls = 'completed';
+                } else if (nocSocActive) {
+                    const isSaved = s.id === 4 ? isNOCSaved() : isSOCSaved();
+                    statusBadge = isSaved
+                        ? '<span class="status-badge status-completed">Saved</span>'
+                        : '<span class="status-badge status-active">Fill Now</span>';
+                    cls = isSaved ? 'completed' : 'active';
                 } else if (s.id < currentRequest.currentStage) {
                     statusBadge = '<span class="status-badge status-completed">Done</span>';
                 } else if (s.id === currentRequest.currentStage) {
@@ -1222,12 +1231,14 @@
             const isIOC = currentStage === 6;
             const isApprovalStage = APPROVAL_STAGES.includes(currentStage);
             const isFinalStage = currentStage === 9;
+            // NOC/SOC are editable when IOC is active stage
+            const nocSocEditable = (isNOC || isSOC) && currentRequest.currentStage === 6;
 
             if (currentRequest.status === 'approved') {
                 bar.innerHTML = '<span style="color:#5cb85c; font-weight:700;">&#9989; REQUEST APPROVED -- VM Provisioning Proceeds</span>';
                 return;
             }
-            if (!isActive) {
+            if (!isActive && !nocSocEditable) {
                 bar.innerHTML = '<span style="color:#7a8a99;">Viewing completed stage (read-only)</span>';
                 return;
             }
@@ -1617,7 +1628,15 @@
         function saveForm() {
             collectFormData();
             updateRequest(currentRequest);
-            showToast('Draft saved', 'success');
+            if (currentStage === 4) {
+                showToast('NOC details saved. Now fill SOC details.', 'success');
+                renderFlowBar();
+            } else if (currentStage === 5) {
+                showToast('SOC details saved. IOC Manager can now review.', 'success');
+                renderFlowBar();
+            } else {
+                showToast('Draft saved', 'success');
+            }
             // Refresh IOC status if viewing IOC
             if (currentStage === 6) {
                 updateIOCStatus();
@@ -1633,6 +1652,16 @@
                     showToast('Cannot publish: Both NOC and SOC must be saved first', 'error');
                     return;
                 }
+            }
+
+            // DataCenter (stage 3) publishes -> skip to IOC (stage 6)
+            // NOC (4) and SOC (5) are parallel and only save
+            if (currentStage === 3) {
+                currentRequest.currentStage = 6;
+                updateRequest(currentRequest);
+                goToStage(4); // Show NOC first so user can fill it
+                showToast('Published — NOC & SOC can now be filled. IOC will review.', 'success');
+                return;
             }
 
             currentRequest.currentStage = currentStage + 1;
