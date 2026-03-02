@@ -6,1004 +6,1222 @@
     <title>VM Provisioning Workflow</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f1923; color: #e0e0e0; min-height: 100vh; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f1923;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
 
-        .top-bar { background: #1a2d40; border-bottom: 2px solid #2a4a6a; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-        .top-bar h1 { font-size: 18px; color: #fff; letter-spacing: 2px; }
-        .top-bar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-        .btn { padding: 7px 16px; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* Top bar */
+        .top-bar {
+            background: #1a2d40;
+            border-bottom: 2px solid #2a4a6a;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .top-bar h1 {
+            font-size: 20px;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+        .top-bar-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
         .btn:hover { transform: translateY(-1px); }
         .btn-save { background: #3d3215; color: #f0ad4e; border: 1px solid #f0ad4e; }
+        .btn-save:hover { background: #4d4225; }
         .btn-publish { background: #1a3320; color: #5cb85c; border: 1px solid #5cb85c; }
+        .btn-publish:hover { background: #2a4330; }
         .btn-reject { background: #3d1515; color: #d9534f; border: 1px solid #d9534f; }
-        .btn-approve { background: #1a3320; color: #5cb85c; border: 1px solid #5cb85c; }
+        .btn-reject:hover { background: #4d2525; }
+        .btn-approve { background: #1a3320; color: #5cb85c; border: 1px solid #5cb85c; font-size: 14px; }
         .btn-export { background: #1a2a4a; color: #4a9eff; border: 1px solid #4a9eff; }
+        .btn-export:hover { background: #2a3a5a; }
         .btn-new { background: #2a1a3a; color: #b07aff; border: 1px solid #b07aff; }
-        .btn-admin { background: #1a3a3a; color: #4ae0c0; border: 1px solid #4ae0c0; }
-        .btn-cancel { background: #253545; color: #b0b0b0; border: 1px solid #3a4a5a; }
-        .btn-sm { padding: 4px 10px; font-size: 11px; }
-
-        /* Tabs for admin */
-        .admin-tabs { display: flex; gap: 0; margin-bottom: 20px; }
-        .admin-tab { padding: 10px 20px; background: #1a2a3a; border: 1px solid #253545; color: #7a8a99; cursor: pointer; font-size: 13px; font-weight: 600; }
-        .admin-tab:first-child { border-radius: 8px 0 0 8px; }
-        .admin-tab:last-child { border-radius: 0 8px 8px 0; }
-        .admin-tab.active { background: #1e3550; color: #4a9eff; border-color: #4a9eff; }
+        .btn-new:hover { background: #3a2a4a; }
 
         /* Flow bar */
-        .flow-bar { display: flex; align-items: center; justify-content: center; gap: 0; padding: 15px 10px; background: #12202e; border-bottom: 1px solid #253545; flex-wrap: wrap; }
+        .flow-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 20px 15px;
+            background: #12202e;
+            border-bottom: 1px solid #253545;
+            flex-wrap: wrap;
+        }
         .flow-step { display: flex; align-items: center; cursor: pointer; }
-        .flow-step-box { background: #1a2a3a; border: 2px solid #253545; border-radius: 8px; padding: 6px 12px; text-align: center; min-width: 100px; transition: all 0.3s; }
+        .flow-step-box {
+            background: #1a2a3a;
+            border: 2px solid #253545;
+            border-radius: 8px;
+            padding: 8px 16px;
+            text-align: center;
+            min-width: 120px;
+            transition: all 0.3s;
+            position: relative;
+        }
         .flow-step-box:hover { border-color: #4a9eff; }
-        .flow-step-box.active { border-color: #4a9eff; background: #1e3550; box-shadow: 0 0 15px rgba(74,158,255,0.3); }
-        .flow-step-box.completed { border-color: #5cb85c; background: #1a2e1a; }
-        .flow-step-box .step-num { font-size: 9px; color: #4a9eff; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .flow-step-box.active {
+            border-color: #4a9eff;
+            background: #1e3550;
+            box-shadow: 0 0 15px rgba(74, 158, 255, 0.3);
+        }
+        .flow-step-box.completed {
+            border-color: #5cb85c;
+            background: #1a2e1a;
+        }
+        .flow-step-box.rejected {
+            border-color: #d9534f;
+            background: #2e1a1a;
+        }
+        .flow-step-box .step-num {
+            font-size: 10px;
+            color: #4a9eff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
         .flow-step-box.completed .step-num { color: #5cb85c; }
-        .flow-step-box .step-name { font-size: 12px; font-weight: 600; color: #fff; margin-top: 1px; }
-        .flow-arrow { color: #4a9eff; font-size: 18px; margin: 0 3px; user-select: none; }
-        .status-badge { display: inline-block; padding: 2px 6px; border-radius: 10px; font-size: 8px; font-weight: 700; text-transform: uppercase; margin-top: 2px; }
+        .flow-step-box.rejected .step-num { color: #d9534f; }
+        .flow-step-box .step-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            margin-top: 1px;
+        }
+        .flow-arrow {
+            color: #4a9eff;
+            font-size: 22px;
+            margin: 0 4px;
+            user-select: none;
+        }
+
+        /* Status badge */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
         .status-pending { background: #3d3215; color: #f0ad4e; }
         .status-completed { background: #1a3320; color: #5cb85c; }
         .status-active { background: #1a2a4a; color: #4a9eff; }
+        .status-rejected { background: #3d1515; color: #d9534f; }
 
-        .main-content { max-width: 950px; margin: 0 auto; padding: 25px 15px; }
+        /* Main content */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
         .stage-panel { display: none; }
         .stage-panel.active { display: block; }
 
-        .stage-title-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-        .stage-number { background: #4a9eff; color: #fff; font-weight: 800; font-size: 16px; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .stage-title { font-size: 20px; font-weight: 700; color: #fff; }
-        .stage-team { font-size: 12px; color: #7a8a99; }
+        .stage-title-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stage-number {
+            background: #4a9eff;
+            color: #fff;
+            font-weight: 800;
+            font-size: 18px;
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .stage-title { font-size: 22px; font-weight: 700; color: #fff; }
+        .stage-team { font-size: 13px; color: #7a8a99; }
 
-        .form-section { background: #152230; border: 1px solid #253545; border-radius: 10px; padding: 18px; margin-bottom: 16px; }
-        .form-section-title { font-size: 13px; font-weight: 700; color: #e0a040; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid #253545; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
-        .form-group { display: flex; flex-direction: column; gap: 4px; }
-        .form-group.full-width { grid-column: 1 / -1; }
-        .form-label { font-size: 11px; font-weight: 600; color: #4a9eff; text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-input, .form-select, .form-textarea { background: #1a2a3a; border: 1px solid #2a4a6a; border-radius: 6px; padding: 8px 10px; color: #e0e0e0; font-size: 13px; font-family: inherit; transition: border-color 0.2s; }
-        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #4a9eff; box-shadow: 0 0 8px rgba(74,158,255,0.2); }
-        .form-textarea { resize: vertical; min-height: 50px; }
-        .form-hint { font-size: 10px; color: #5a6a7a; }
+        /* Form styles */
+        .form-section {
+            background: #152230;
+            border: 1px solid #253545;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .form-section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e0a040;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #253545;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a9eff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-input, .form-select, .form-textarea {
+            background: #1a2a3a;
+            border: 1px solid #2a4a6a;
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: #e0e0e0;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #4a9eff;
+            box-shadow: 0 0 8px rgba(74, 158, 255, 0.2);
+        }
+        .form-select { cursor: pointer; }
+        .form-textarea { resize: vertical; min-height: 60px; }
+        .form-hint {
+            font-size: 11px;
+            color: #5a6a7a;
+        }
 
-        /* Resource summary box */
-        .resource-summary { background: #1a3320; border: 1px solid #2a5a3a; border-radius: 8px; padding: 12px 16px; margin-top: 8px; display: none; }
-        .resource-summary.show { display: block; }
-        .resource-summary .res-title { font-size: 11px; color: #5cb85c; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
-        .resource-summary .res-items { display: flex; gap: 20px; flex-wrap: wrap; }
-        .resource-summary .res-item { font-size: 14px; color: #a0e0a0; font-weight: 600; }
+        /* Checkbox group */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #1a2a3a;
+            border: 1px solid #2a4a6a;
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .checkbox-item:hover { border-color: #4a9eff; }
+        .checkbox-item input[type="checkbox"] {
+            accent-color: #4a9eff;
+            cursor: pointer;
+        }
+        .checkbox-item label {
+            font-size: 13px;
+            color: #c0c0c0;
+            cursor: pointer;
+        }
 
-        /* Addable list */
-        .addable-list { display: flex; flex-direction: column; gap: 8px; }
-        .addable-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        .addable-row .form-input, .addable-row .form-select { flex: 1; min-width: 80px; }
-        .btn-remove-row { background: none; border: 1px solid #d9534f; color: #d9534f; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; flex-shrink: 0; }
-        .btn-add-row { background: #1a2a4a; border: 1px dashed #4a9eff; color: #4a9eff; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; text-align: center; transition: all 0.2s; }
-        .btn-add-row:hover { background: #1e3550; }
+        /* Policy block repeater */
+        .policy-container { display: flex; flex-direction: column; gap: 15px; }
+        .policy-block {
+            background: #12202e;
+            border: 1px solid #2a3a4a;
+            border-radius: 10px;
+            padding: 16px;
+            position: relative;
+        }
+        .policy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .policy-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #e0a040;
+        }
+        .btn-remove-policy {
+            background: none;
+            border: 1px solid #d9534f;
+            color: #d9534f;
+            padding: 3px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .btn-add-policy {
+            background: #1a2a4a;
+            border: 1px dashed #4a9eff;
+            color: #4a9eff;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .btn-add-policy:hover { background: #1e3550; }
 
-        /* Policy block */
-        .policy-container { display: flex; flex-direction: column; gap: 12px; }
-        .policy-block { background: #12202e; border: 1px solid #2a3a4a; border-radius: 8px; padding: 14px; }
-        .policy-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .policy-title { font-size: 12px; font-weight: 700; color: #e0a040; }
+        /* Approver card */
+        .approver-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #1a2a3a;
+            border: 1px solid #253545;
+            border-radius: 12px;
+            padding: 25px;
+        }
+        .approver-icon {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: #2a4a6a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+        .approver-name { font-size: 20px; font-weight: 700; color: #fff; }
+        .approver-role { font-size: 14px; color: #7a8a99; margin-top: 4px; }
 
-        /* Security profiles multi-add */
-        .profile-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-        .profile-tag { background: #2a4a6a; color: #a0d0ff; padding: 4px 10px; border-radius: 12px; font-size: 11px; display: flex; align-items: center; gap: 6px; }
-        .profile-tag .remove-tag { cursor: pointer; color: #d9534f; font-weight: 700; }
-
-        /* Approver */
-        .approver-card { display: flex; align-items: center; gap: 15px; background: #1a2a3a; border: 1px solid #253545; border-radius: 10px; padding: 20px; }
-        .approver-icon { width: 50px; height: 50px; border-radius: 50%; background: #2a4a6a; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
-        .approver-name { font-size: 18px; font-weight: 700; color: #fff; }
-        .approver-role { font-size: 12px; color: #7a8a99; }
-        .approval-status { margin-left: auto; }
-
-        /* Summary table */
-        .summary-table { width: 100%; border-collapse: collapse; }
-        .summary-table th { text-align: left; padding: 6px 10px; font-size: 11px; color: #4a9eff; text-transform: uppercase; border-bottom: 1px solid #253545; }
-        .summary-table td { padding: 6px 10px; font-size: 13px; color: #c0c0c0; border-bottom: 1px solid #1a2a3a; }
-        .summary-table tr:hover td { background: #1a2a3a; }
-        .summary-section-header { background: #1a2d40; }
-        .summary-section-header td { color: #e0a040; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; padding: 10px; }
-
-        /* Queue */
-        .queue-section { max-width: 950px; margin: 0 auto; padding: 20px 15px; }
-        .queue-item { background: #152230; border: 1px solid #253545; border-radius: 8px; padding: 14px 18px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
-        .queue-item:hover { border-color: #4a9eff; background: #1a2a3a; }
-        .queue-info h3 { font-size: 14px; color: #fff; }
-        .queue-info p { font-size: 11px; color: #7a8a99; margin-top: 2px; }
-
-        /* Request list */
-        .request-list { max-width: 950px; margin: 20px auto; padding: 0 15px; }
-        .request-item { background: #152230; border: 1px solid #253545; border-radius: 8px; padding: 14px 18px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
-        .request-item:hover { border-color: #4a9eff; background: #1a2a3a; }
-        .request-info h3 { font-size: 14px; color: #fff; }
-        .request-info p { font-size: 11px; color: #7a8a99; margin-top: 2px; }
-        .btn-delete-req { background: none; border: 1px solid #d9534f; color: #d9534f; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; }
-        .empty-state { text-align: center; padding: 50px 20px; color: #5a6a7a; }
-        .empty-state h3 { font-size: 18px; color: #7a8a99; margin-bottom: 8px; }
-
-        /* Modal */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+        /* Reject modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
         .modal-overlay.show { display: flex; }
-        .modal-box { background: #1a2d40; border: 1px solid #2a4a6a; border-radius: 12px; padding: 25px; max-width: 450px; width: 90%; }
-        .modal-title { font-size: 16px; font-weight: 700; color: #d9534f; margin-bottom: 12px; }
-        .modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+        .modal-box {
+            background: #1a2d40;
+            border: 1px solid #2a4a6a;
+            border-radius: 14px;
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #d9534f;
+            margin-bottom: 15px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        .btn-cancel {
+            background: #253545;
+            color: #b0b0b0;
+            border: 1px solid #3a4a5a;
+        }
 
-        /* Toast */
-        .toast { position: fixed; bottom: 25px; right: 25px; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; z-index: 2000; transform: translateY(100px); opacity: 0; transition: all 0.3s; }
-        .toast.show { transform: translateY(0); opacity: 1; }
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 2000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
         .toast-success { background: #1a3320; color: #5cb85c; border: 1px solid #5cb85c; }
         .toast-error { background: #3d1515; color: #d9534f; border: 1px solid #d9534f; }
         .toast-info { background: #1a2a4a; color: #4a9eff; border: 1px solid #4a9eff; }
 
+        /* Request list */
+        .request-list {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .request-list h2 {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .request-item {
+            background: #152230;
+            border: 1px solid #253545;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .request-item:hover {
+            border-color: #4a9eff;
+            background: #1a2a3a;
+        }
+        .request-info h3 { font-size: 16px; color: #fff; }
+        .request-info p { font-size: 12px; color: #7a8a99; margin-top: 3px; }
+        .request-item-actions { display: flex; gap: 8px; align-items: center; }
+        .btn-delete-req {
+            background: none;
+            border: 1px solid #d9534f;
+            color: #d9534f;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #5a6a7a;
+        }
+        .empty-state h3 { font-size: 20px; color: #7a8a99; margin-bottom: 10px; }
+
         @media (max-width: 700px) {
-            .flow-step-box { min-width: 60px; padding: 4px 6px; }
-            .flow-step-box .step-name { font-size: 9px; }
-            .flow-arrow { font-size: 14px; }
+            .flow-step-box { min-width: 80px; padding: 6px 8px; }
+            .flow-step-box .step-name { font-size: 10px; }
+            .flow-arrow { font-size: 16px; margin: 0 2px; }
             .form-grid { grid-template-columns: 1fr; }
-            .top-bar { flex-direction: column; gap: 8px; }
+            .top-bar { flex-direction: column; gap: 10px; }
         }
     </style>
 </head>
 <body>
 
-<div class="top-bar">
-    <h1>VM PROVISIONING WORKFLOW</h1>
-    <div class="top-bar-actions">
-        <button class="btn btn-new" onclick="showHome()">All Requests</button>
-        <button class="btn btn-admin" onclick="showAdmin()">Admin Settings</button>
-        <button class="btn btn-export" onclick="exportToFile()">Export to Text</button>
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <h1>VM PROVISIONING WORKFLOW</h1>
+        <div class="top-bar-actions">
+            <button class="btn btn-new" onclick="showHome()">All Requests</button>
+            <button class="btn btn-export" onclick="exportToFile()">Export to Text</button>
+        </div>
     </div>
-</div>
 
-<!-- ========== HOME VIEW ========== -->
-<div id="home-view">
-    <div class="request-list">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-            <h2 style="color:#fff; font-size:18px;">VM Requests</h2>
-            <button class="btn btn-publish" onclick="createNewRequest()">+ New Request</button>
-        </div>
-        <div id="request-list-container"></div>
-    </div>
-</div>
-
-<!-- ========== ADMIN VIEW ========== -->
-<div id="admin-view" style="display:none;">
-    <div class="main-content">
-        <div class="stage-title-bar">
-            <div class="stage-number" style="background:#4ae0c0;">A</div>
-            <div><div class="stage-title">Admin Settings</div><div class="stage-team">Define resource groups, clusters, and security profiles</div></div>
-        </div>
-        <div class="admin-tabs">
-            <div class="admin-tab active" onclick="switchAdminTab('resources')">Resource Groups</div>
-            <div class="admin-tab" onclick="switchAdminTab('clusters')">Clusters</div>
-            <div class="admin-tab" onclick="switchAdminTab('secprofiles')">Security Profiles</div>
-        </div>
-
-        <!-- Resource Groups -->
-        <div id="admin-resources" class="form-section">
-            <div class="form-section-title">Server Resource Groups (Defined by DC Team)</div>
-            <div id="resource-groups-list" class="addable-list"></div>
-            <div class="btn-add-row" onclick="addResourceGroup()" style="margin-top:10px;">+ Add Resource Group</div>
-        </div>
-
-        <!-- Clusters -->
-        <div id="admin-clusters" class="form-section" style="display:none;">
-            <div class="form-section-title">Clusters (Defined by DC Team)</div>
-            <div id="clusters-list" class="addable-list"></div>
-            <div class="btn-add-row" onclick="addClusterAdmin()" style="margin-top:10px;">+ Add Cluster</div>
-        </div>
-
-        <!-- Security Profiles -->
-        <div id="admin-secprofiles" class="form-section" style="display:none;">
-            <div class="form-section-title">Security Profiles (Defined by SOC Team)</div>
-            <div id="secprofiles-list" class="addable-list"></div>
-            <div class="btn-add-row" onclick="addSecProfile()" style="margin-top:10px;">+ Add Security Profile</div>
-        </div>
-
-        <button class="btn btn-save" onclick="saveAdmin()" style="margin-top:15px;">Save Admin Settings</button>
-    </div>
-</div>
-
-<!-- ========== WORKFLOW VIEW ========== -->
-<div id="workflow-view" style="display:none;">
-    <div class="flow-bar" id="flow-bar"></div>
-    <div class="main-content">
-        <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:16px; flex-wrap:wrap;" id="stage-actions-bar"></div>
-
-        <!-- STAGE 1: REQUEST -->
-        <div class="stage-panel" id="stage-1">
-            <div class="stage-title-bar">
-                <div class="stage-number">1</div>
-                <div><div class="stage-title">Request</div><div class="stage-team">Filled by: Requester / Dev Team</div></div>
+    <!-- HOME: Request List -->
+    <div id="home-view">
+        <div class="request-list">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <h2>VM Requests</h2>
+                <button class="btn btn-publish" onclick="createNewRequest()">+ New Request</button>
             </div>
-            <div class="form-section">
-                <div class="form-grid">
-                    <div class="form-group"><label class="form-label">Server Name</label><input type="text" class="form-input" data-field="serverName" placeholder="e.g. app-web-01"></div>
-                    <div class="form-group"><label class="form-label">Application Name</label><input type="text" class="form-input" data-field="appName" placeholder="e.g. Moneyline Portal"></div>
-                    <div class="form-group full-width"><label class="form-label">Purpose</label><textarea class="form-textarea" data-field="purpose" placeholder="What this VM will be used for..."></textarea></div>
-                    <div class="form-group"><label class="form-label">Language / Framework</label><input type="text" class="form-input" data-field="langFramework" placeholder="e.g. Java, .NET, Node.js"></div>
-                    <div class="form-group"><label class="form-label">Environment</label>
-                        <select class="form-select" data-field="environment"><option value="">-- Select --</option><option>Prod</option><option>Staging</option><option>Dev</option></select>
-                    </div>
-                    <div class="form-group"><label class="form-label"># Expected Concurrent Users</label><input type="number" class="form-input" data-field="concurrentUsers" placeholder="e.g. 500"></div>
-                    <div class="form-group"><label class="form-label">DBMS</label>
-                        <select class="form-select" data-field="dbms"><option value="">-- Select --</option><option>SQL Server</option><option>MySQL</option><option>PostgreSQL</option><option>Oracle</option><option>MongoDB</option><option>MariaDB</option><option>None</option></select>
-                    </div>
-                    <div class="form-group"><label class="form-label">GIT Repo</label><input type="text" class="form-input" data-field="gitRepo" placeholder="https://github.com/..."></div>
-                    <div class="form-group"><label class="form-label">Access Group</label><input type="text" class="form-input" data-field="accessGroup" placeholder="e.g. AD-AppTeam-01"></div>
-                    <div class="form-group"><label class="form-label">SLA</label>
-                        <select class="form-select" data-field="sla"><option value="">-- Select --</option><option>Mission Critical</option><option>Critical</option><option>Standard</option></select>
-                    </div>
-                    <div class="form-group"><label class="form-label">FQDN Suggestion</label><input type="text" class="form-input" data-field="fqdnSuggestion" placeholder="e.g. app.jmmb.com"></div>
-                    <div class="form-group"><label class="form-label">Authentication Method</label>
-                        <select class="form-select" data-field="authMethod"><option value="">-- Select --</option><option>AD/LDAP</option><option>OAuth</option><option>SAML</option><option>Local</option></select>
-                    </div>
+            <div id="request-list-container"></div>
+        </div>
+    </div>
+
+    <!-- WORKFLOW VIEW -->
+    <div id="workflow-view" style="display:none;">
+
+        <!-- FLOW BAR -->
+        <div class="flow-bar" id="flow-bar"></div>
+
+        <div class="main-content">
+            <!-- Stage action buttons -->
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-bottom:20px;" id="stage-actions-bar"></div>
+
+            <!-- STAGE 1: REQUEST -->
+            <div class="stage-panel" id="stage-1">
+                <div class="stage-title-bar">
+                    <div class="stage-number">1</div>
+                    <div><div class="stage-title">Request</div><div class="stage-team">Filled by: Requester / Dev Team</div></div>
                 </div>
-            </div>
-        </div>
-
-        <!-- STAGE 2: SYS ADMIN -->
-        <div class="stage-panel" id="stage-2">
-            <div class="stage-title-bar">
-                <div class="stage-number">2</div>
-                <div><div class="stage-title">Sys Admin</div><div class="stage-team">Filled by: Sys Admin Team</div></div>
-            </div>
-            <div class="form-section">
-                <div class="form-grid">
-                    <div class="form-group"><label class="form-label">Sensitivity Level</label>
-                        <select class="form-select" data-field="sensitivityLevel"><option value="">-- Select --</option><option>Public</option><option>Internal</option><option>Confidential</option><option>Restricted</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Server Resources</label>
-                        <select class="form-select" data-field="serverResources" onchange="showResourceSummary(this.value)">
-                            <option value="">-- Select --</option>
-                        </select>
-                        <div class="resource-summary" id="resource-summary">
-                            <div class="res-title">Resource Summary</div>
-                            <div class="res-items" id="resource-summary-items"></div>
+                <div class="form-section">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Server Name</label>
+                            <input type="text" class="form-input" data-field="serverName" placeholder="e.g. app-web-01">
+                            <span class="form-hint">Suggested hostname</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Application Name</label>
+                            <input type="text" class="form-input" data-field="appName" placeholder="e.g. Moneyline Portal">
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Purpose</label>
+                            <textarea class="form-textarea" data-field="purpose" placeholder="Describe what this VM will be used for..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Custom Language / Framework</label>
+                            <input type="text" class="form-input" data-field="langFramework" placeholder="e.g. Java, .NET, Node.js">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Environment</label>
+                            <select class="form-select" data-field="environment">
+                                <option value="">-- Select --</option>
+                                <option value="Prod">Prod</option>
+                                <option value="Staging">Staging</option>
+                                <option value="Dev">Dev</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"># of Expected Concurrent Users</label>
+                            <input type="number" class="form-input" data-field="concurrentUsers" placeholder="e.g. 500">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">DBMS</label>
+                            <select class="form-select" data-field="dbms">
+                                <option value="">-- Select --</option>
+                                <option value="SQL Server">SQL Server</option>
+                                <option value="MySQL">MySQL</option>
+                                <option value="PostgreSQL">PostgreSQL</option>
+                                <option value="Oracle">Oracle</option>
+                                <option value="None">None</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">GIT Repo</label>
+                            <input type="text" class="form-input" data-field="gitRepo" placeholder="https://github.com/...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Access Group</label>
+                            <input type="text" class="form-input" data-field="accessGroup" placeholder="e.g. AD-AppTeam-01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">SLA</label>
+                            <select class="form-select" data-field="sla">
+                                <option value="">-- Select --</option>
+                                <option value="Mission Critical">Mission Critical</option>
+                                <option value="Critical">Critical</option>
+                                <option value="Standard">Standard</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">FQDN Suggestion</label>
+                            <input type="text" class="form-input" data-field="fqdnSuggestion" placeholder="e.g. app.jmmb.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Authentication Method</label>
+                            <select class="form-select" data-field="authMethod">
+                                <option value="">-- Select --</option>
+                                <option value="AD/LDAP">AD/LDAP</option>
+                                <option value="OAuth">OAuth</option>
+                                <option value="SAML">SAML</option>
+                                <option value="Local">Local</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="form-group"><label class="form-label">Web Server Implementation</label>
-                        <select class="form-select" data-field="webServer"><option value="">-- Select --</option><option>IIS</option><option>Apache</option><option>Nginx</option><option>None</option></select>
-                    </div>
-                    <div class="form-group"><label class="form-label">Database</label>
-                        <select class="form-select" data-field="database"><option value="">-- Select --</option><option>New Database</option><option>Existing Database</option><option>None</option></select>
-                    </div>
-                    <div class="form-group"><label class="form-label">Database Name</label><input type="text" class="form-input" data-field="databaseName" placeholder="Database name"></div>
-                    <div class="form-group"><label class="form-label">Hostname</label><input type="text" class="form-input" data-field="hostname" placeholder="Final assigned hostname"></div>
                 </div>
             </div>
-            <div class="form-section">
-                <div class="form-section-title">Services (Protocol / Port / Name)</div>
-                <div class="addable-list" id="services-list"></div>
-                <div class="btn-add-row" onclick="addServiceRow()" style="margin-top:8px;">+ Add Service</div>
-            </div>
-        </div>
 
-        <!-- STAGE 3: DATA CENTER -->
-        <div class="stage-panel" id="stage-3">
-            <div class="stage-title-bar">
-                <div class="stage-number">3</div>
-                <div><div class="stage-title">Data Center</div><div class="stage-team">Filled by: DC Team</div></div>
-            </div>
-            <div class="form-section">
-                <div class="form-grid">
-                    <div class="form-group"><label class="form-label">Environment / Hardware</label>
-                        <select class="form-select" data-field="hardware"><option value="">-- Select --</option><option>Dell</option><option>Hyperflex</option></select>
+            <!-- STAGE 2: SYS ADMIN -->
+            <div class="stage-panel" id="stage-2">
+                <div class="stage-title-bar">
+                    <div class="stage-number">2</div>
+                    <div><div class="stage-title">Sys Admin</div><div class="stage-team">Filled by: Sys Admin Team</div></div>
+                </div>
+                <div class="form-section">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Sensitivity Level</label>
+                            <select class="form-select" data-field="sensitivityLevel">
+                                <option value="">-- Select --</option>
+                                <option value="Public">Public</option>
+                                <option value="Internal">Internal</option>
+                                <option value="Confidential">Confidential</option>
+                                <option value="Restricted">Restricted</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Server Resources</label>
+                            <select class="form-select" data-field="serverResources">
+                                <option value="">-- Select --</option>
+                                <option value="Micro">Micro</option>
+                                <option value="Small">Small</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Large">Large</option>
+                                <option value="XLarge">XLarge</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Web Server Implementation</label>
+                            <select class="form-select" data-field="webServer">
+                                <option value="">-- Select --</option>
+                                <option value="IIS">IIS</option>
+                                <option value="Apache">Apache</option>
+                                <option value="Nginx">Nginx</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Database</label>
+                            <select class="form-select" data-field="database">
+                                <option value="">-- Select --</option>
+                                <option value="Get from ADO alone">Get from ADO alone</option>
+                                <option value="App name">App name</option>
+                                <option value="Got existing database">Got existing database</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hostname</label>
+                            <input type="text" class="form-input" data-field="hostname" placeholder="Final assigned hostname">
+                        </div>
                     </div>
-                    <div class="form-group"><label class="form-label">Uplink Speed</label>
-                        <select class="form-select" data-field="uplinkSpeed"><option value="">-- Select --</option><option>1Gb</option><option>10Gb</option><option>40Gb</option></select>
+                </div>
+                <div class="form-section">
+                    <div class="form-section-title">Services</div>
+                    <div class="checkbox-group" id="services-checkboxes">
+                        <div class="checkbox-item"><input type="checkbox" id="svc-https" data-field="svc_https"><label for="svc-https">HTTPS</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="svc-http" data-field="svc_http"><label for="svc-http">HTTP</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="svc-ssh" data-field="svc_ssh"><label for="svc-ssh">SSH</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="svc-dns" data-field="svc_dns"><label for="svc-dns">DNS</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="svc-udp" data-field="svc_udp"><label for="svc-udp">UDP</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="svc-ftp" data-field="svc_ftp"><label for="svc-ftp">FTP</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="svc-smtp" data-field="svc_smtp"><label for="svc-smtp">SMTP</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="svc-rdp" data-field="svc_rdp"><label for="svc-rdp">RDP</label></div>
                     </div>
-                    <div class="form-group"><label class="form-label">Host Type</label>
-                        <select class="form-select" data-field="hostType"><option value="">-- Select --</option><option>Baremetal</option><option>VM</option></select>
+                </div>
+            </div>
+
+            <!-- STAGE 3: DATA CENTER -->
+            <div class="stage-panel" id="stage-3">
+                <div class="stage-title-bar">
+                    <div class="stage-number">3</div>
+                    <div><div class="stage-title">Data Center</div><div class="stage-team">Filled by: DC Team</div></div>
+                </div>
+                <div class="form-section">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Environment / Hardware</label>
+                            <select class="form-select" data-field="hardware">
+                                <option value="">-- Select --</option>
+                                <option value="Dell">Dell</option>
+                                <option value="Hyperflex">Hyperflex</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Uplink Speed</label>
+                            <select class="form-select" data-field="uplinkSpeed">
+                                <option value="">-- Select --</option>
+                                <option value="1Gb">1 Gb</option>
+                                <option value="10Gb">10 Gb</option>
+                                <option value="40Gb">40 Gb</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Host Type</label>
+                            <select class="form-select" data-field="hostType">
+                                <option value="">-- Select --</option>
+                                <option value="Baremetal">Baremetal</option>
+                                <option value="VM">VM</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Port #</label>
+                            <input type="text" class="form-input" data-field="dcPort" placeholder="Assigned port number">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Location — DC</label>
+                            <input type="text" class="form-input" data-field="locationDC" placeholder="Data center name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Location — Rack Row</label>
+                            <input type="text" class="form-input" data-field="rackRow" placeholder="Row identifier">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Location — Rack U#</label>
+                            <input type="text" class="form-input" data-field="rackU" placeholder="Rack unit number">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cluster</label>
+                            <select class="form-select" data-field="cluster">
+                                <option value="">-- Select --</option>
+                                <option value="Hyperflex">Hyperflex</option>
+                                <option value="VxRail">VxRail</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group"><label class="form-label">Port #</label><input type="text" class="form-input" data-field="dcPort" placeholder="Port number"></div>
-                    <div class="form-group"><label class="form-label">Location - DC</label><input type="text" class="form-input" data-field="locationDC" placeholder="Data center name"></div>
-                    <div class="form-group"><label class="form-label">Location - Rack Row</label><input type="text" class="form-input" data-field="rackRow" placeholder="Row identifier"></div>
-                    <div class="form-group"><label class="form-label">Location - Rack U#</label><input type="text" class="form-input" data-field="rackU" placeholder="Rack unit number"></div>
-                    <div class="form-group"><label class="form-label">Cluster</label>
-                        <select class="form-select" data-field="cluster" id="cluster-select"><option value="">-- Select --</option></select>
+                </div>
+            </div>
+
+            <!-- STAGE 4: NOC -->
+            <div class="stage-panel" id="stage-4">
+                <div class="stage-title-bar">
+                    <div class="stage-number">4A</div>
+                    <div><div class="stage-title">NOC — Network Operations</div><div class="stage-team">Filled by: NOC Team</div></div>
+                </div>
+                <div class="form-section">
+                    <div class="form-section-title">IP Scheme</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">IP Address</label>
+                            <input type="text" class="form-input" data-field="ipAddress" placeholder="e.g. 10.193.19.x">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subnet Mask</label>
+                            <input type="text" class="form-input" data-field="subnetMask" placeholder="e.g. 255.255.255.0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">VLAN ID</label>
+                            <input type="text" class="form-input" data-field="vlanId" placeholder="VLAN assignment">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gateway</label>
+                            <input type="text" class="form-input" data-field="gateway" placeholder="Gateway IP">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Port #</label>
+                            <input type="text" class="form-input" data-field="nocPort" placeholder="Network port">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="form-section-title">Virtual</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Virtual IP (VIP)</label>
+                            <input type="text" class="form-input" data-field="vip" placeholder="Virtual IP address">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Virtual Port</label>
+                            <input type="text" class="form-input" data-field="virtualPort" placeholder="Virtual port number">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Virtual FQDN</label>
+                            <input type="text" class="form-input" data-field="virtualFQDN" placeholder="Virtual FQDN">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="form-section-title">Network Path</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Switch</label>
+                            <input type="text" class="form-input" data-field="netSwitch" placeholder="Switch assignment">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Firewall</label>
+                            <input type="text" class="form-input" data-field="netFirewall" placeholder="Firewall assignment">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- STAGE 4: NOC -->
-        <div class="stage-panel" id="stage-4">
-            <div class="stage-title-bar">
-                <div class="stage-number">4A</div>
-                <div><div class="stage-title">NOC - Network Operations</div><div class="stage-team">Filled by: NOC Team</div></div>
-            </div>
-            <div class="form-section">
-                <div class="form-section-title">IP Scheme</div>
-                <div class="form-grid">
-                    <div class="form-group"><label class="form-label">IP Address</label><input type="text" class="form-input" data-field="ipAddress" placeholder="e.g. 10.193.19.x"></div>
-                    <div class="form-group"><label class="form-label">Subnet Mask</label><input type="text" class="form-input" data-field="subnetMask" placeholder="e.g. 255.255.255.0"></div>
-                    <div class="form-group"><label class="form-label">VLAN ID</label><input type="text" class="form-input" data-field="vlanId" placeholder="VLAN assignment"></div>
-                    <div class="form-group"><label class="form-label">Gateway</label><input type="text" class="form-input" data-field="gateway" placeholder="Gateway IP"></div>
-                    <div class="form-group"><label class="form-label">Port #</label><input type="text" class="form-input" data-field="nocPort" placeholder="Network port"></div>
+            <!-- STAGE 5: SOC -->
+            <div class="stage-panel" id="stage-5">
+                <div class="stage-title-bar">
+                    <div class="stage-number">4B</div>
+                    <div><div class="stage-title">SOC — Security Operations</div><div class="stage-team">Filled by: SOC Team</div></div>
+                </div>
+                <div class="form-section">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">VDOM</label>
+                            <input type="text" class="form-input" data-field="vdom" placeholder="Virtual domain">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="form-section-title">Firewall Policies (per VDOM)</div>
+                    <div class="policy-container" id="policy-container"></div>
+                    <div class="btn-add-policy" onclick="addPolicy()" style="margin-top:12px;">+ Add Policy</div>
+                </div>
+                <div class="form-section">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">IOC Manager Approval</label>
+                            <select class="form-select" data-field="iocApproval">
+                                <option value="">-- Select --</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="form-section">
-                <div class="form-section-title">Virtual</div>
-                <div class="form-grid">
-                    <div class="form-group"><label class="form-label">Virtual IP (VIP)</label><input type="text" class="form-input" data-field="vip" placeholder="Virtual IP"></div>
-                    <div class="form-group"><label class="form-label">Virtual Port</label><input type="text" class="form-input" data-field="virtualPort" placeholder="Virtual port"></div>
-                    <div class="form-group"><label class="form-label">Virtual FQDN</label><input type="text" class="form-input" data-field="virtualFQDN" placeholder="Virtual FQDN"></div>
-                </div>
-            </div>
-            <div class="form-section">
-                <div class="form-section-title">Network Path (Device / Port / Link Speed)</div>
-                <div class="addable-list" id="netpath-list"></div>
-                <div class="btn-add-row" onclick="addNetPathRow()" style="margin-top:8px;">+ Add Network Path</div>
-            </div>
-        </div>
 
-        <!-- STAGE 5: SOC -->
-        <div class="stage-panel" id="stage-5">
-            <div class="stage-title-bar">
-                <div class="stage-number">4B</div>
-                <div><div class="stage-title">SOC - Security Operations</div><div class="stage-team">Filled by: SOC Team</div></div>
-            </div>
-            <div class="form-section">
-                <div class="form-grid">
-                    <div class="form-group"><label class="form-label">VDOM</label><input type="text" class="form-input" data-field="vdom" placeholder="Virtual domain"></div>
+            <!-- STAGE 6: CISO -->
+            <div class="stage-panel" id="stage-6">
+                <div class="stage-title-bar">
+                    <div class="stage-number">5</div>
+                    <div><div class="stage-title">CISO Approval</div><div class="stage-team">Chief Information Security Officer</div></div>
                 </div>
-            </div>
-            <div class="form-section">
-                <div class="form-section-title">Firewall Policies (per VDOM)</div>
-                <div class="policy-container" id="policy-container"></div>
-                <div class="btn-add-row" onclick="addPolicy()" style="margin-top:10px;">+ Add Policy</div>
-            </div>
-        </div>
-
-        <!-- STAGE 6: IOC MANAGER -->
-        <div class="stage-panel" id="stage-6">
-            <div class="stage-title-bar">
-                <div class="stage-number">5</div>
-                <div><div class="stage-title">IOC Manager Review</div><div class="stage-team">Reviews NOC + SOC submissions and submits for approval</div></div>
-            </div>
-            <div class="form-section">
-                <div class="form-section-title">NOC + SOC Summary</div>
-                <div id="ioc-summary"></div>
-            </div>
-            <div class="form-section">
-                <div class="form-group full-width">
-                    <label class="form-label">IOC Manager Comments</label>
-                    <textarea class="form-textarea" data-field="iocComments" placeholder="Comments..." style="min-height:80px;"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- STAGE 7: APPROVAL -->
-        <div class="stage-panel" id="stage-7">
-            <div class="stage-title-bar">
-                <div class="stage-number">6</div>
-                <div><div class="stage-title">Final Approval</div><div class="stage-team">Any 2 of 3 must approve: CISO, CTO, Ops Officer</div></div>
-            </div>
-            <div class="form-section">
-                <div class="form-section-title">Full Request Summary</div>
-                <div id="approval-summary"></div>
-            </div>
-            <div class="form-section">
-                <div class="form-section-title">Approvals (2 of 3 required)</div>
-                <div style="display:flex; flex-direction:column; gap:12px;">
+                <div class="form-section">
                     <div class="approver-card">
                         <div class="approver-icon">&#128274;</div>
-                        <div><div class="approver-name">CISO</div><div class="approver-role">Chief Information Security Officer</div></div>
-                        <div class="approval-status">
-                            <select class="form-select" data-field="cisoApproval" style="min-width:120px;"><option value="">Pending</option><option value="Approved">Approve</option><option value="Rejected">Reject</option></select>
+                        <div>
+                            <div class="approver-name">CISO</div>
+                            <div class="approver-role">Reviews all stages — Security sign-off</div>
                         </div>
                     </div>
-                    <div class="approver-card">
-                        <div class="approver-icon">&#128187;</div>
-                        <div><div class="approver-name">CTO</div><div class="approver-role">Chief Technology Officer</div></div>
-                        <div class="approval-status">
-                            <select class="form-select" data-field="ctoApproval" style="min-width:120px;"><option value="">Pending</option><option value="Approved">Approve</option><option value="Rejected">Reject</option></select>
+                    <div class="form-grid" style="margin-top:20px;">
+                        <div class="form-group full-width">
+                            <label class="form-label">Comments / Notes</label>
+                            <textarea class="form-textarea" data-field="cisoComments" placeholder="CISO review comments..."></textarea>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- STAGE 7: OPS MANAGER -->
+            <div class="stage-panel" id="stage-7">
+                <div class="stage-title-bar">
+                    <div class="stage-number">6</div>
+                    <div><div class="stage-title">Ops Manager — Final Approval</div><div class="stage-team">Operations Manager</div></div>
+                </div>
+                <div class="form-section">
                     <div class="approver-card">
                         <div class="approver-icon">&#9989;</div>
-                        <div><div class="approver-name">Ops Officer</div><div class="approver-role">Operations Officer</div></div>
-                        <div class="approval-status">
-                            <select class="form-select" data-field="opsApproval" style="min-width:120px;"><option value="">Pending</option><option value="Approved">Approve</option><option value="Rejected">Reject</option></select>
+                        <div>
+                            <div class="approver-name">Operations Manager</div>
+                            <div class="approver-role">Final review — Once approved, VM provisioning proceeds</div>
+                        </div>
+                    </div>
+                    <div class="form-grid" style="margin-top:20px;">
+                        <div class="form-group full-width">
+                            <label class="form-label">Comments / Notes</label>
+                            <textarea class="form-textarea" data-field="opsComments" placeholder="Ops Manager review comments..."></textarea>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="form-section">
-                <div class="form-group full-width">
-                    <label class="form-label">Approval Comments</label>
-                    <textarea class="form-textarea" data-field="approvalComments" placeholder="Comments..."></textarea>
-                </div>
+
+        </div>
+    </div>
+
+    <!-- REJECT MODAL -->
+    <div class="modal-overlay" id="reject-modal">
+        <div class="modal-box">
+            <div class="modal-title">Reject Request</div>
+            <div class="form-group">
+                <label class="form-label">Reason for Rejection</label>
+                <textarea class="form-textarea" id="reject-reason" placeholder="Enter reason for rejection..." style="min-height:100px;"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeRejectModal()">Cancel</button>
+                <button class="btn btn-reject" onclick="confirmReject()">Reject</button>
             </div>
         </div>
-
     </div>
-</div>
 
-<!-- REJECT MODAL -->
-<div class="modal-overlay" id="reject-modal">
-    <div class="modal-box">
-        <div class="modal-title">Reject Request</div>
-        <div class="form-group"><label class="form-label">Reason for Rejection</label><textarea class="form-textarea" id="reject-reason" placeholder="Enter reason..." style="min-height:80px;"></textarea></div>
-        <div class="modal-actions"><button class="btn btn-cancel" onclick="closeRejectModal()">Cancel</button><button class="btn btn-reject" onclick="confirmReject()">Reject</button></div>
-    </div>
-</div>
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
 
-<div class="toast" id="toast"></div>
+    <script>
+        const STAGES = [
+            { id: 1, name: 'Request', short: 'Request' },
+            { id: 2, name: 'Sys Admin', short: 'Sys Admin' },
+            { id: 3, name: 'Data Center', short: 'Data Center' },
+            { id: 4, name: 'NOC', short: 'NOC' },
+            { id: 5, name: 'SOC', short: 'SOC' },
+            { id: 6, name: 'CISO', short: 'CISO' },
+            { id: 7, name: 'Ops Manager', short: 'Ops Mgr' }
+        ];
 
-<script>
-const STAGES = [
-    { id:1, name:'Request', short:'Request' },
-    { id:2, name:'Sys Admin', short:'Sys Admin' },
-    { id:3, name:'Data Center', short:'Data Center' },
-    { id:4, name:'NOC', short:'NOC' },
-    { id:5, name:'SOC', short:'SOC' },
-    { id:6, name:'IOC Manager', short:'IOC Mgr' },
-    { id:7, name:'Approval', short:'Approval' }
-];
+        let currentRequest = null;
+        let currentStage = 1;
+        let policyCount = 0;
 
-let currentRequest = null;
-let currentStage = 1;
-let policyCount = 0;
+        // ---- Data persistence (localStorage) ----
+        function getAllRequests() {
+            return JSON.parse(localStorage.getItem('vm_requests') || '[]');
+        }
+        function saveAllRequests(requests) {
+            localStorage.setItem('vm_requests', JSON.stringify(requests));
+        }
+        function getRequest(id) {
+            return getAllRequests().find(r => r.id === id);
+        }
+        function updateRequest(req) {
+            let requests = getAllRequests();
+            const idx = requests.findIndex(r => r.id === req.id);
+            if (idx >= 0) requests[idx] = req;
+            else requests.push(req);
+            saveAllRequests(requests);
+        }
+        function deleteRequest(id) {
+            saveAllRequests(getAllRequests().filter(r => r.id !== id));
+        }
 
-// ===== ADMIN DATA =====
-function getAdmin() {
-    return JSON.parse(localStorage.getItem('vm_admin') || '{"resourceGroups":[{"name":"Micro","vcpu":"1","ram":"1G","hdd":"60G"},{"name":"Small","vcpu":"2","ram":"4G","hdd":"100G"},{"name":"Medium","vcpu":"4","ram":"8G","hdd":"200G"},{"name":"Large","vcpu":"8","ram":"16G","hdd":"500G"},{"name":"XLarge","vcpu":"16","ram":"32G","hdd":"1T"}],"clusters":["Hyperflex","VxRail"],"securityProfiles":["Web Filter","AntiVirus","IPS","Application Control","SSL Inspection"]}');
-}
-function saveAdminData(data) { localStorage.setItem('vm_admin', JSON.stringify(data)); }
-
-function showAdmin() {
-    document.getElementById('home-view').style.display = 'none';
-    document.getElementById('workflow-view').style.display = 'none';
-    document.getElementById('admin-view').style.display = 'block';
-    loadAdminData();
-}
-function switchAdminTab(tab) {
-    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('admin-resources').style.display = 'none';
-    document.getElementById('admin-clusters').style.display = 'none';
-    document.getElementById('admin-secprofiles').style.display = 'none';
-    event.target.classList.add('active');
-    document.getElementById('admin-' + (tab === 'resources' ? 'resources' : tab === 'clusters' ? 'clusters' : 'secprofiles')).style.display = 'block';
-}
-function loadAdminData() {
-    const admin = getAdmin();
-    // Resource groups
-    const rgList = document.getElementById('resource-groups-list');
-    rgList.innerHTML = '';
-    admin.resourceGroups.forEach((rg, i) => {
-        rgList.innerHTML += `<div class="addable-row" id="rg-${i}">
-            <input type="text" class="form-input" placeholder="Name" value="${rg.name}" data-rg="${i}" data-rgf="name">
-            <input type="text" class="form-input" placeholder="vCPU" value="${rg.vcpu}" data-rg="${i}" data-rgf="vcpu" style="max-width:80px;">
-            <input type="text" class="form-input" placeholder="RAM" value="${rg.ram}" data-rg="${i}" data-rgf="ram" style="max-width:80px;">
-            <input type="text" class="form-input" placeholder="HDD" value="${rg.hdd}" data-rg="${i}" data-rgf="hdd" style="max-width:80px;">
-            <button class="btn-remove-row" onclick="this.parentElement.remove()">X</button>
-        </div>`;
-    });
-    // Clusters
-    const cList = document.getElementById('clusters-list');
-    cList.innerHTML = '';
-    admin.clusters.forEach((c, i) => {
-        cList.innerHTML += `<div class="addable-row"><input type="text" class="form-input" placeholder="Cluster name" value="${c}" data-cluster="${i}"><button class="btn-remove-row" onclick="this.parentElement.remove()">X</button></div>`;
-    });
-    // Security profiles
-    const spList = document.getElementById('secprofiles-list');
-    spList.innerHTML = '';
-    admin.securityProfiles.forEach((sp, i) => {
-        spList.innerHTML += `<div class="addable-row"><input type="text" class="form-input" placeholder="Profile name" value="${sp}" data-sp="${i}"><button class="btn-remove-row" onclick="this.parentElement.remove()">X</button></div>`;
-    });
-}
-function addResourceGroup() {
-    const list = document.getElementById('resource-groups-list');
-    const i = list.children.length;
-    const div = document.createElement('div');
-    div.className = 'addable-row';
-    div.innerHTML = `<input type="text" class="form-input" placeholder="Name" data-rg="${i}" data-rgf="name">
-        <input type="text" class="form-input" placeholder="vCPU" data-rg="${i}" data-rgf="vcpu" style="max-width:80px;">
-        <input type="text" class="form-input" placeholder="RAM" data-rg="${i}" data-rgf="ram" style="max-width:80px;">
-        <input type="text" class="form-input" placeholder="HDD" data-rg="${i}" data-rgf="hdd" style="max-width:80px;">
-        <button class="btn-remove-row" onclick="this.parentElement.remove()">X</button>`;
-    list.appendChild(div);
-}
-function addClusterAdmin() {
-    const list = document.getElementById('clusters-list');
-    const div = document.createElement('div');
-    div.className = 'addable-row';
-    div.innerHTML = `<input type="text" class="form-input" placeholder="Cluster name"><button class="btn-remove-row" onclick="this.parentElement.remove()">X</button>`;
-    list.appendChild(div);
-}
-function addSecProfile() {
-    const list = document.getElementById('secprofiles-list');
-    const div = document.createElement('div');
-    div.className = 'addable-row';
-    div.innerHTML = `<input type="text" class="form-input" placeholder="Profile name"><button class="btn-remove-row" onclick="this.parentElement.remove()">X</button>`;
-    list.appendChild(div);
-}
-function saveAdmin() {
-    const rgs = [];
-    document.querySelectorAll('#resource-groups-list .addable-row').forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        if (inputs[0].value) rgs.push({ name: inputs[0].value, vcpu: inputs[1].value, ram: inputs[2].value, hdd: inputs[3].value });
-    });
-    const clusters = [];
-    document.querySelectorAll('#clusters-list .addable-row input').forEach(inp => { if (inp.value) clusters.push(inp.value); });
-    const sps = [];
-    document.querySelectorAll('#secprofiles-list .addable-row input').forEach(inp => { if (inp.value) sps.push(inp.value); });
-    saveAdminData({ resourceGroups: rgs, clusters: clusters, securityProfiles: sps });
-    showToast('Admin settings saved', 'success');
-}
-
-// ===== POPULATE DROPDOWNS FROM ADMIN =====
-function populateAdminDropdowns() {
-    const admin = getAdmin();
-    // Server resources dropdown
-    const sel = document.querySelector('[data-field="serverResources"]');
-    if (sel) {
-        const val = sel.value;
-        sel.innerHTML = '<option value="">-- Select --</option>';
-        admin.resourceGroups.forEach(rg => { sel.innerHTML += `<option value="${rg.name}">${rg.name}</option>`; });
-        sel.value = val;
-    }
-    // Cluster dropdown
-    const csel = document.getElementById('cluster-select');
-    if (csel) {
-        const val = csel.value;
-        csel.innerHTML = '<option value="">-- Select --</option>';
-        admin.clusters.forEach(c => { csel.innerHTML += `<option value="${c}">${c}</option>`; });
-        csel.value = val;
-    }
-}
-function showResourceSummary(val) {
-    const admin = getAdmin();
-    const rg = admin.resourceGroups.find(r => r.name === val);
-    const box = document.getElementById('resource-summary');
-    const items = document.getElementById('resource-summary-items');
-    if (rg && val) {
-        items.innerHTML = `<div class="res-item">${rg.vcpu} x vCPU</div><div class="res-item">${rg.ram} RAM</div><div class="res-item">${rg.hdd} HDD</div>`;
-        box.classList.add('show');
-    } else { box.classList.remove('show'); }
-}
-
-// ===== DATA =====
-function getAllRequests() { return JSON.parse(localStorage.getItem('vm_requests') || '[]'); }
-function saveAllRequests(r) { localStorage.setItem('vm_requests', JSON.stringify(r)); }
-function getRequest(id) { return getAllRequests().find(r => r.id === id); }
-function updateRequest(req) {
-    let reqs = getAllRequests();
-    const idx = reqs.findIndex(r => r.id === req.id);
-    if (idx >= 0) reqs[idx] = req; else reqs.push(req);
-    saveAllRequests(reqs);
-}
-function deleteRequest(id) { saveAllRequests(getAllRequests().filter(r => r.id !== id)); }
-
-// ===== HOME =====
-function showHome() {
-    document.getElementById('home-view').style.display = 'block';
-    document.getElementById('workflow-view').style.display = 'none';
-    document.getElementById('admin-view').style.display = 'none';
-    renderRequestList();
-}
-function renderRequestList() {
-    const container = document.getElementById('request-list-container');
-    const requests = getAllRequests();
-    if (!requests.length) { container.innerHTML = '<div class="empty-state"><h3>No VM Requests Yet</h3><p>Click "+ New Request" to start.</p></div>'; return; }
-    container.innerHTML = requests.map(r => {
-        const si = STAGES[r.currentStage - 1];
-        const sc = r.status === 'approved' ? 'status-completed' : 'status-active';
-        const st = r.status === 'approved' ? 'Approved' : 'Stage ' + r.currentStage + ': ' + si.name;
-        return `<div class="request-item" onclick="openRequest('${r.id}')">
-            <div class="request-info"><h3>${r.data.serverName || r.data.appName || 'Untitled'}</h3><p>Created: ${r.created} | Env: ${r.data.environment||'N/A'} | SLA: ${r.data.sla||'N/A'}</p></div>
-            <div style="display:flex;gap:8px;align-items:center;">
-                <span class="status-badge ${sc}">${st}</span>
-                <button class="btn-delete-req" onclick="event.stopPropagation();if(confirm('Delete?')){deleteRequest('${r.id}');showHome();}">Del</button>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-// ===== REQUEST =====
-function createNewRequest() {
-    const req = { id: 'REQ-' + Date.now(), created: new Date().toLocaleDateString(), currentStage: 1, status: 'in_progress', data: {}, services: [], netPaths: [], policies: [], rejections: [] };
-    updateRequest(req);
-    openRequest(req.id);
-}
-function openRequest(id) {
-    currentRequest = getRequest(id);
-    if (!currentRequest) return;
-    if (!currentRequest.services) currentRequest.services = [];
-    if (!currentRequest.netPaths) currentRequest.netPaths = [];
-    if (!currentRequest.policies) currentRequest.policies = [];
-    currentStage = currentRequest.currentStage;
-    document.getElementById('home-view').style.display = 'none';
-    document.getElementById('admin-view').style.display = 'none';
-    document.getElementById('workflow-view').style.display = 'block';
-    populateAdminDropdowns();
-    renderFlowBar();
-    goToStage(currentStage);
-    loadFormData();
-    loadServices();
-    loadNetPaths();
-    loadPolicies();
-}
-
-// ===== FLOW BAR =====
-function renderFlowBar() {
-    const bar = document.getElementById('flow-bar');
-    bar.innerHTML = STAGES.map((s, i) => {
-        let cls = s.id === currentStage ? 'active' : s.id < currentRequest.currentStage ? 'completed' : '';
-        if (currentRequest.status === 'approved') cls = 'completed';
-        const labels = ['1','2','3','4A','4B','5','6'];
-        const badge = currentRequest.status === 'approved' ? '<span class="status-badge status-completed">Done</span>'
-            : s.id < currentRequest.currentStage ? '<span class="status-badge status-completed">Done</span>'
-            : s.id === currentRequest.currentStage ? '<span class="status-badge status-active">Active</span>'
-            : '<span class="status-badge status-pending">Pending</span>';
-        const arrow = i < STAGES.length - 1 ? `<div class="flow-arrow">${i===3?'+':'&#9654;'}</div>` : '';
-        return `<div class="flow-step" onclick="goToStage(${s.id})"><div class="flow-step-box ${cls}"><div class="step-num">Stage ${labels[i]}</div><div class="step-name">${s.short}</div>${badge}</div></div>${arrow}`;
-    }).join('');
-}
-
-// ===== STAGE NAV =====
-function goToStage(id) {
-    currentStage = id;
-    document.querySelectorAll('.stage-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('stage-' + id).classList.add('active');
-    renderFlowBar();
-    renderStageActions();
-    if (id === 6) renderIOCSummary();
-    if (id === 7) renderApprovalSummary();
-    if (id === 2) { populateAdminDropdowns(); if (currentRequest.data.serverResources) showResourceSummary(currentRequest.data.serverResources); }
-    if (id === 3) populateAdminDropdowns();
-}
-function renderStageActions() {
-    const bar = document.getElementById('stage-actions-bar');
-    const isActive = currentStage === currentRequest.currentStage;
-    if (currentRequest.status === 'approved') { bar.innerHTML = '<span style="color:#5cb85c;font-weight:700;">&#9989; APPROVED - VM Provisioning Proceeds</span>'; return; }
-    if (!isActive) { bar.innerHTML = '<span style="color:#7a8a99;">Viewing completed stage</span>'; return; }
-
-    let html = '<button class="btn btn-save" onclick="saveForm()">Save Draft</button>';
-
-    // SOC/NOC: save and reject only, no publish (IOC manager publishes)
-    if (currentStage === 4 || currentStage === 5) {
-        if (currentStage > 1) html += '<button class="btn btn-reject" onclick="openRejectModal()">Reject</button>';
-        // NOC can publish to SOC, but SOC cannot publish (IOC does)
-        if (currentStage === 4) html += '<button class="btn btn-publish" onclick="publishForm()">Publish to SOC &#9654;</button>';
-    } else if (currentStage === 6) {
-        // IOC Manager: can submit NOC+SOC to approval
-        html += '<button class="btn btn-reject" onclick="openRejectModal()">Reject</button>';
-        html += '<button class="btn btn-publish" onclick="publishForm()">Submit for Approval &#9654;</button>';
-    } else if (currentStage === 7) {
-        // Approval stage
-        html += '<button class="btn btn-reject" onclick="openRejectModal()">Reject</button>';
-        html += '<button class="btn btn-approve" onclick="checkApproval()">&#9989; Process Approval</button>';
-    } else {
-        if (currentStage > 1) html += '<button class="btn btn-reject" onclick="openRejectModal()">Reject</button>';
-        html += '<button class="btn btn-publish" onclick="publishForm()">Publish &#9654;</button>';
-    }
-    bar.innerHTML = html;
-}
-
-// ===== FORM DATA =====
-function collectFormData() {
-    const panel = document.getElementById('stage-' + currentStage);
-    panel.querySelectorAll('[data-field]').forEach(el => {
-        if (el.type === 'checkbox') currentRequest.data[el.dataset.field] = el.checked;
-        else currentRequest.data[el.dataset.field] = el.value;
-    });
-    if (currentStage === 2) collectServices();
-    if (currentStage === 4) collectNetPaths();
-    if (currentStage === 5) collectPolicies();
-}
-function loadFormData() {
-    STAGES.forEach(s => {
-        const panel = document.getElementById('stage-' + s.id);
-        panel.querySelectorAll('[data-field]').forEach(el => {
-            const val = currentRequest.data[el.dataset.field];
-            if (el.type === 'checkbox') el.checked = val || false;
-            else el.value = val || '';
-        });
-    });
-}
-
-// ===== SERVICES (addable list: Protocol, Port, Name) =====
-function addServiceRow(proto, port, name) {
-    const list = document.getElementById('services-list');
-    const div = document.createElement('div');
-    div.className = 'addable-row';
-    div.innerHTML = `<select class="form-select" style="max-width:100px;"><option value="">Proto</option><option ${proto==='TCP'?'selected':''}>TCP</option><option ${proto==='UDP'?'selected':''}>UDP</option></select>
-        <input type="text" class="form-input" placeholder="Port #" value="${port||''}" style="max-width:100px;">
-        <input type="text" class="form-input" placeholder="Service Name (e.g. HTTPS)" value="${name||''}">
-        <button class="btn-remove-row" onclick="this.parentElement.remove()">X</button>`;
-    list.appendChild(div);
-}
-function collectServices() {
-    const svcs = [];
-    document.querySelectorAll('#services-list .addable-row').forEach(row => {
-        const sel = row.querySelector('select');
-        const inputs = row.querySelectorAll('input');
-        if (sel.value || inputs[0].value) svcs.push({ protocol: sel.value, port: inputs[0].value, name: inputs[1].value });
-    });
-    currentRequest.services = svcs;
-}
-function loadServices() {
-    document.getElementById('services-list').innerHTML = '';
-    (currentRequest.services || []).forEach(s => addServiceRow(s.protocol, s.port, s.name));
-}
-
-// ===== NETWORK PATHS (addable list: Device, Port, LinkSpeed) =====
-function addNetPathRow(device, port, speed) {
-    const list = document.getElementById('netpath-list');
-    const div = document.createElement('div');
-    div.className = 'addable-row';
-    div.innerHTML = `<input type="text" class="form-input" placeholder="Device Name" value="${device||''}">
-        <input type="text" class="form-input" placeholder="Port" value="${port||''}" style="max-width:120px;">
-        <input type="text" class="form-input" placeholder="Link Speed" value="${speed||''}" style="max-width:120px;">
-        <button class="btn-remove-row" onclick="this.parentElement.remove()">X</button>`;
-    list.appendChild(div);
-}
-function collectNetPaths() {
-    const paths = [];
-    document.querySelectorAll('#netpath-list .addable-row').forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        if (inputs[0].value) paths.push({ device: inputs[0].value, port: inputs[1].value, speed: inputs[2].value });
-    });
-    currentRequest.netPaths = paths;
-}
-function loadNetPaths() {
-    document.getElementById('netpath-list').innerHTML = '';
-    (currentRequest.netPaths || []).forEach(n => addNetPathRow(n.device, n.port, n.speed));
-}
-
-// ===== POLICIES =====
-function addPolicy(data) {
-    policyCount++;
-    const idx = policyCount;
-    const d = data || {};
-    const admin = getAdmin();
-    const profileOptions = admin.securityProfiles.map(sp => `<option value="${sp}" ${(d.secProfiles||[]).includes(sp)?'selected':''}>${sp}</option>`).join('');
-
-    const container = document.getElementById('policy-container');
-    const div = document.createElement('div');
-    div.className = 'policy-block';
-    div.id = 'policy-' + idx;
-    div.innerHTML = `<div class="policy-header"><div class="policy-title">Policy #${idx}</div><button class="btn-remove-row" onclick="document.getElementById('policy-${idx}').remove()">Remove</button></div>
-        <div class="form-grid">
-            <div class="form-group"><label class="form-label">Policy Name</label><input type="text" class="form-input" data-policy="${idx}" data-pf="name" value="${d.name||''}" placeholder="Policy name"></div>
-            <div class="form-group"><label class="form-label">Source Interface</label><input type="text" class="form-input" data-policy="${idx}" data-pf="srcInt" value="${d.srcInt||''}" placeholder="Source interface"></div>
-            <div class="form-group"><label class="form-label">Destination Interface</label><input type="text" class="form-input" data-policy="${idx}" data-pf="dstInt" value="${d.dstInt||''}" placeholder="Dest interface"></div>
-            <div class="form-group"><label class="form-label">Source IP</label><input type="text" class="form-input" data-policy="${idx}" data-pf="srcIp" value="${d.srcIp||''}" placeholder="Source IP"></div>
-            <div class="form-group"><label class="form-label">Destination IP</label><input type="text" class="form-input" data-policy="${idx}" data-pf="dstIp" value="${d.dstIp||''}" placeholder="Dest IP"></div>
-            <div class="form-group"><label class="form-label">Services</label><input type="text" class="form-input" data-policy="${idx}" data-pf="services" value="${d.services||''}" placeholder="HTTPS, SSH, DNS..."></div>
-            <div class="form-group"><label class="form-label">Schedule</label>
-                <select class="form-select" data-policy="${idx}" data-pf="schedule"><option value="">-- Select --</option><option ${d.schedule==='Always'?'selected':''}>Always</option><option ${d.schedule==='Business Hours'?'selected':''}>Business Hours</option><option ${d.schedule==='Custom'?'selected':''}>Custom</option></select>
-            </div>
-            <div class="form-group"><label class="form-label">Action</label>
-                <select class="form-select" data-policy="${idx}" data-pf="action"><option value="">-- Select --</option><option ${d.action==='Accept'?'selected':''}>Accept</option><option ${d.action==='Reject'?'selected':''}>Reject</option></select>
-            </div>
-            <div class="form-group full-width"><label class="form-label">Security Profiles (multi-select)</label>
-                <select class="form-select" multiple data-policy="${idx}" data-pf="secProfiles" style="min-height:80px;">${profileOptions}</select>
-                <span class="form-hint">Hold Ctrl/Cmd to select multiple</span>
-            </div>
-        </div>`;
-    container.appendChild(div);
-}
-function collectPolicies() {
-    const policies = [];
-    document.querySelectorAll('.policy-block').forEach(block => {
-        const policy = {};
-        block.querySelectorAll('[data-pf]').forEach(el => {
-            if (el.multiple) {
-                policy[el.dataset.pf] = Array.from(el.selectedOptions).map(o => o.value);
-            } else {
-                policy[el.dataset.pf] = el.value;
+        // ---- Home view ----
+        function showHome() {
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('workflow-view').style.display = 'none';
+            renderRequestList();
+        }
+        function renderRequestList() {
+            const container = document.getElementById('request-list-container');
+            const requests = getAllRequests();
+            if (requests.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>No VM Requests Yet</h3><p>Click "+ New Request" to create your first VM provisioning request.</p></div>';
+                return;
             }
-        });
-        if (Object.values(policy).some(v => v && (Array.isArray(v) ? v.length : true))) policies.push(policy);
-    });
-    currentRequest.policies = policies;
-}
-function loadPolicies() {
-    document.getElementById('policy-container').innerHTML = '';
-    policyCount = 0;
-    (currentRequest.policies || []).forEach(p => addPolicy(p));
-}
+            container.innerHTML = requests.map(r => {
+                const stageInfo = STAGES[r.currentStage - 1];
+                const statusClass = r.status === 'rejected' ? 'status-rejected' : r.status === 'approved' ? 'status-completed' : 'status-active';
+                const statusText = r.status === 'rejected' ? 'Rejected' : r.status === 'approved' ? 'Approved' : 'Stage ' + r.currentStage + ': ' + stageInfo.name;
+                return `<div class="request-item" onclick="openRequest('${r.id}')">
+                    <div class="request-info">
+                        <h3>${r.data.serverName || r.data.appName || 'Untitled Request'}</h3>
+                        <p>Created: ${r.created} &nbsp;|&nbsp; Environment: ${r.data.environment || 'N/A'}</p>
+                    </div>
+                    <div class="request-item-actions">
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                        <button class="btn-delete-req" onclick="event.stopPropagation(); if(confirm('Delete this request?')) { deleteRequest('${r.id}'); showHome(); }">Delete</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
 
-// ===== IOC SUMMARY =====
-function renderIOCSummary() {
-    const d = currentRequest.data;
-    let html = '<table class="summary-table">';
-    html += '<tr class="summary-section-header"><td colspan="2">NOC - Network Operations</td></tr>';
-    [['IP Address',d.ipAddress],['Subnet Mask',d.subnetMask],['VLAN ID',d.vlanId],['Gateway',d.gateway],['Port #',d.nocPort],['Virtual IP',d.vip],['Virtual Port',d.virtualPort],['Virtual FQDN',d.virtualFQDN]].forEach(([k,v]) => {
-        html += `<tr><th>${k}</th><td>${v||'-'}</td></tr>`;
-    });
-    if (currentRequest.netPaths && currentRequest.netPaths.length) {
-        html += '<tr><th>Network Paths</th><td>';
-        currentRequest.netPaths.forEach(n => { html += `${n.device} | Port: ${n.port} | Speed: ${n.speed}<br>`; });
-        html += '</td></tr>';
-    }
-    html += '<tr class="summary-section-header"><td colspan="2">SOC - Security Operations</td></tr>';
-    html += `<tr><th>VDOM</th><td>${d.vdom||'-'}</td></tr>`;
-    if (currentRequest.policies && currentRequest.policies.length) {
-        currentRequest.policies.forEach((p,i) => {
-            html += `<tr><th>Policy #${i+1}</th><td>${p.name||'-'} | Src: ${p.srcInt||'-'}/${p.srcIp||'-'} | Dst: ${p.dstInt||'-'}/${p.dstIp||'-'} | Services: ${p.services||'-'} | Action: ${p.action||'-'} | Profiles: ${(p.secProfiles||[]).join(', ')||'-'}</td></tr>`;
-        });
-    }
-    html += '</table>';
-    document.getElementById('ioc-summary').innerHTML = html;
-}
+        // ---- Create / Open request ----
+        function createNewRequest() {
+            const id = 'REQ-' + Date.now();
+            const req = {
+                id,
+                created: new Date().toLocaleDateString(),
+                currentStage: 1,
+                status: 'in_progress',
+                data: {},
+                policies: [],
+                rejections: []
+            };
+            updateRequest(req);
+            openRequest(id);
+        }
+        function openRequest(id) {
+            currentRequest = getRequest(id);
+            if (!currentRequest) return;
+            currentStage = currentRequest.currentStage;
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('workflow-view').style.display = 'block';
+            renderFlowBar();
+            goToStage(currentStage);
+            loadFormData();
+            loadPolicies();
+        }
 
-// ===== APPROVAL SUMMARY =====
-function renderApprovalSummary() {
-    const d = currentRequest.data;
-    const admin = getAdmin();
-    const rg = admin.resourceGroups.find(r => r.name === d.serverResources);
-    let html = '<table class="summary-table">';
+        // ---- Flow bar ----
+        function renderFlowBar() {
+            const bar = document.getElementById('flow-bar');
+            bar.innerHTML = STAGES.map((s, i) => {
+                let cls = '';
+                if (s.id === currentStage) cls = 'active';
+                else if (s.id < currentRequest.currentStage) cls = 'completed';
+                if (currentRequest.rejections && currentRequest.rejections.find(r => r.stage === s.id)) cls = 'rejected';
+                if (s.id < currentRequest.currentStage) cls = 'completed';
+                if (s.id === currentStage) cls = 'active';
 
-    html += '<tr class="summary-section-header"><td colspan="2">Stage 1: Request</td></tr>';
-    [['Server Name',d.serverName],['Application',d.appName],['Purpose',d.purpose],['Language/Framework',d.langFramework],['Environment',d.environment],['Concurrent Users',d.concurrentUsers],['DBMS',d.dbms],['GIT Repo',d.gitRepo],['Access Group',d.accessGroup],['SLA',d.sla],['FQDN',d.fqdnSuggestion],['Auth Method',d.authMethod]].forEach(([k,v]) => {
-        html += `<tr><th>${k}</th><td>${v||'-'}</td></tr>`;
-    });
+                const arrow = i < STAGES.length - 1 ? `<div class="flow-arrow">${i === 3 ? '+' : '&#9654;'}</div>` : '';
+                const statusBadge = s.id < currentRequest.currentStage ? '<span class="status-badge status-completed">Done</span>'
+                    : s.id === currentRequest.currentStage ? '<span class="status-badge status-active">Active</span>'
+                    : '<span class="status-badge status-pending">Pending</span>';
+                if (currentRequest.status === 'approved' && s.id <= 7) {
+                    return `<div class="flow-step" onclick="goToStage(${s.id})">
+                        <div class="flow-step-box completed"><div class="step-num">Stage ${s.id <= 5 ? (s.id <= 3 ? s.id : '4' + (s.id === 4 ? 'A' : 'B')) : s.id - 1}</div><div class="step-name">${s.short}</div><span class="status-badge status-completed">Done</span></div>
+                    </div>${arrow}`;
+                }
+                return `<div class="flow-step" onclick="goToStage(${s.id})">
+                    <div class="flow-step-box ${cls}"><div class="step-num">Stage ${s.id <= 3 ? s.id : s.id <= 5 ? '4' + (s.id === 4 ? 'A' : 'B') : s.id - 1}</div><div class="step-name">${s.short}</div>${statusBadge}</div>
+                </div>${arrow}`;
+            }).join('');
+        }
 
-    html += '<tr class="summary-section-header"><td colspan="2">Stage 2: Sys Admin</td></tr>';
-    [['Sensitivity',d.sensitivityLevel],['Server Resources',d.serverResources + (rg ? ` (${rg.vcpu} vCPU, ${rg.ram} RAM, ${rg.hdd} HDD)` : '')],['Web Server',d.webServer],['Database',d.database],['Database Name',d.databaseName],['Hostname',d.hostname]].forEach(([k,v]) => {
-        html += `<tr><th>${k}</th><td>${v||'-'}</td></tr>`;
-    });
-    if (currentRequest.services && currentRequest.services.length) {
-        html += '<tr><th>Services</th><td>';
-        currentRequest.services.forEach(s => { html += `${s.protocol} ${s.port} ${s.name}<br>`; });
-        html += '</td></tr>';
-    }
+        // ---- Stage navigation ----
+        function goToStage(stageId) {
+            currentStage = stageId;
+            document.querySelectorAll('.stage-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('stage-' + stageId).classList.add('active');
+            renderFlowBar();
+            renderStageActions();
+        }
+        function renderStageActions() {
+            const bar = document.getElementById('stage-actions-bar');
+            const isActive = currentStage === currentRequest.currentStage;
+            const isFinalStage = currentStage === 7;
+            const isFirstStage = currentStage === 1;
 
-    html += '<tr class="summary-section-header"><td colspan="2">Stage 3: Data Center</td></tr>';
-    [['Hardware',d.hardware],['Uplink Speed',d.uplinkSpeed],['Host Type',d.hostType],['Port #',d.dcPort],['DC',d.locationDC],['Rack Row',d.rackRow],['Rack U#',d.rackU],['Cluster',d.cluster]].forEach(([k,v]) => {
-        html += `<tr><th>${k}</th><td>${v||'-'}</td></tr>`;
-    });
+            if (currentRequest.status === 'approved') {
+                bar.innerHTML = '<span style="color:#5cb85c; font-weight:700;">&#9989; REQUEST APPROVED — VM Provisioning Proceeds</span>';
+                return;
+            }
+            if (!isActive) {
+                bar.innerHTML = '<span style="color:#7a8a99;">Viewing completed stage (read-only)</span>';
+                return;
+            }
+            let html = '<button class="btn btn-save" onclick="saveForm()">Save Draft</button>';
+            if (!isFirstStage) html += '<button class="btn btn-reject" onclick="openRejectModal()">Reject</button>';
+            if (isFinalStage) html += '<button class="btn btn-approve" onclick="publishForm()">&#9989; Approve</button>';
+            else html += '<button class="btn btn-publish" onclick="publishForm()">Publish &#9654;</button>';
+            bar.innerHTML = html;
+        }
 
-    html += '<tr class="summary-section-header"><td colspan="2">Stage 4A: NOC</td></tr>';
-    [['IP Address',d.ipAddress],['Subnet Mask',d.subnetMask],['VLAN ID',d.vlanId],['Gateway',d.gateway],['Port',d.nocPort],['VIP',d.vip],['Virtual Port',d.virtualPort],['Virtual FQDN',d.virtualFQDN]].forEach(([k,v]) => {
-        html += `<tr><th>${k}</th><td>${v||'-'}</td></tr>`;
-    });
-    if (currentRequest.netPaths && currentRequest.netPaths.length) {
-        html += '<tr><th>Network Paths</th><td>';
-        currentRequest.netPaths.forEach(n => { html += `${n.device} | Port: ${n.port} | Speed: ${n.speed}<br>`; });
-        html += '</td></tr>';
-    }
+        // ---- Form data ----
+        function collectFormData() {
+            const panel = document.getElementById('stage-' + currentStage);
+            panel.querySelectorAll('[data-field]').forEach(el => {
+                if (el.type === 'checkbox') currentRequest.data[el.dataset.field] = el.checked;
+                else currentRequest.data[el.dataset.field] = el.value;
+            });
+            // Collect policies
+            if (currentStage === 5) collectPolicies();
+        }
+        function loadFormData() {
+            STAGES.forEach(s => {
+                const panel = document.getElementById('stage-' + s.id);
+                panel.querySelectorAll('[data-field]').forEach(el => {
+                    const val = currentRequest.data[el.dataset.field];
+                    if (el.type === 'checkbox') el.checked = val || false;
+                    else el.value = val || '';
+                });
+            });
+        }
 
-    html += '<tr class="summary-section-header"><td colspan="2">Stage 4B: SOC</td></tr>';
-    html += `<tr><th>VDOM</th><td>${d.vdom||'-'}</td></tr>`;
-    if (currentRequest.policies && currentRequest.policies.length) {
-        currentRequest.policies.forEach((p,i) => {
-            html += `<tr><th>Policy #${i+1}</th><td>${p.name||'-'} | Src: ${p.srcInt||'-'}/${p.srcIp||'-'} | Dst: ${p.dstInt||'-'}/${p.dstIp||'-'} | Svcs: ${p.services||'-'} | Action: ${p.action||'-'} | Profiles: ${(p.secProfiles||[]).join(', ')||'-'}</td></tr>`;
-        });
-    }
+        // ---- Policies ----
+        function addPolicy() {
+            policyCount++;
+            const idx = policyCount;
+            const container = document.getElementById('policy-container');
+            const div = document.createElement('div');
+            div.className = 'policy-block';
+            div.id = 'policy-' + idx;
+            div.innerHTML = `
+                <div class="policy-header">
+                    <div class="policy-title">Policy #${idx}</div>
+                    <button class="btn-remove-policy" onclick="removePolicy(${idx})">Remove</button>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group"><label class="form-label">Policy Name</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="name" placeholder="Policy name"></div>
+                    <div class="form-group"><label class="form-label">Source Interface</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="srcInt" placeholder="Source interface"></div>
+                    <div class="form-group"><label class="form-label">Destination Interface</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="dstInt" placeholder="Destination interface"></div>
+                    <div class="form-group"><label class="form-label">Source IP</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="srcIp" placeholder="Source IP"></div>
+                    <div class="form-group"><label class="form-label">Destination IP</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="dstIp" placeholder="Destination IP"></div>
+                    <div class="form-group"><label class="form-label">Services</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="services" placeholder="HTTPS, SSH, DNS..."></div>
+                    <div class="form-group"><label class="form-label">Schedule</label>
+                        <select class="form-select" data-policy="${idx}" data-pfield="schedule">
+                            <option value="">-- Select --</option><option value="Always">Always</option><option value="Business Hours">Business Hours</option><option value="Custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label class="form-label">Action</label>
+                        <select class="form-select" data-policy="${idx}" data-pfield="action">
+                            <option value="">-- Select --</option><option value="Accept">Accept</option><option value="Drop">Drop</option><option value="Deny">Deny</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label class="form-label">Security Profile</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="secProfile" placeholder="Security profile"></div>
+                </div>`;
+            container.appendChild(div);
+        }
+        function removePolicy(idx) {
+            const el = document.getElementById('policy-' + idx);
+            if (el) el.remove();
+        }
+        function collectPolicies() {
+            const policies = [];
+            document.querySelectorAll('.policy-block').forEach(block => {
+                const policy = {};
+                block.querySelectorAll('[data-pfield]').forEach(el => {
+                    policy[el.dataset.pfield] = el.value;
+                });
+                if (Object.values(policy).some(v => v)) policies.push(policy);
+            });
+            currentRequest.policies = policies;
+        }
+        function loadPolicies() {
+            const container = document.getElementById('policy-container');
+            container.innerHTML = '';
+            policyCount = 0;
+            if (currentRequest.policies && currentRequest.policies.length > 0) {
+                currentRequest.policies.forEach(p => {
+                    addPolicy();
+                    const block = document.getElementById('policy-' + policyCount);
+                    Object.keys(p).forEach(key => {
+                        const el = block.querySelector(`[data-pfield="${key}"]`);
+                        if (el) el.value = p[key];
+                    });
+                });
+            }
+        }
 
-    html += '<tr class="summary-section-header"><td colspan="2">Stage 5: IOC Manager</td></tr>';
-    html += `<tr><th>IOC Comments</th><td>${d.iocComments||'-'}</td></tr>`;
+        // ---- Save / Publish / Reject ----
+        function saveForm() {
+            collectFormData();
+            updateRequest(currentRequest);
+            showToast('Draft saved', 'success');
+        }
+        function publishForm() {
+            collectFormData();
+            if (currentStage === 7) {
+                currentRequest.status = 'approved';
+                updateRequest(currentRequest);
+                renderFlowBar();
+                renderStageActions();
+                showToast('Request APPROVED — VM provisioning proceeds!', 'success');
+                return;
+            }
+            currentRequest.currentStage = currentStage + 1;
+            updateRequest(currentRequest);
+            goToStage(currentStage + 1);
+            showToast('Published to ' + STAGES[currentStage - 1].name, 'success');
+        }
+        function openRejectModal() {
+            document.getElementById('reject-modal').classList.add('show');
+            document.getElementById('reject-reason').value = '';
+        }
+        function closeRejectModal() {
+            document.getElementById('reject-modal').classList.remove('show');
+        }
+        function confirmReject() {
+            const reason = document.getElementById('reject-reason').value;
+            if (!reason.trim()) { showToast('Please enter a rejection reason', 'error'); return; }
+            collectFormData();
+            currentRequest.rejections = currentRequest.rejections || [];
+            currentRequest.rejections.push({ stage: currentStage, reason, date: new Date().toLocaleString() });
+            currentRequest.currentStage = currentStage - 1;
+            currentRequest.status = 'in_progress';
+            updateRequest(currentRequest);
+            closeRejectModal();
+            goToStage(currentStage - 1);
+            showToast('Rejected — sent back to ' + STAGES[currentStage - 2].name, 'error');
+        }
 
-    html += '</table>';
-    document.getElementById('approval-summary').innerHTML = html;
-}
+        // ---- Export ----
+        function exportToFile() {
+            if (!currentRequest) { showToast('Open a request first', 'error'); return; }
+            collectFormData();
+            let text = '========================================\n';
+            text += '  VM PROVISIONING REQUEST: ' + currentRequest.id + '\n';
+            text += '  Created: ' + currentRequest.created + '\n';
+            text += '  Status: ' + currentRequest.status.toUpperCase() + '\n';
+            text += '  Current Stage: ' + STAGES[currentRequest.currentStage - 1].name + '\n';
+            text += '========================================\n\n';
 
-// ===== SAVE / PUBLISH / REJECT =====
-function saveForm() {
-    collectFormData();
-    updateRequest(currentRequest);
-    showToast('Draft saved', 'success');
-}
-function publishForm() {
-    collectFormData();
-    // SOC goes to IOC manager (stage 5 -> 6)
-    currentRequest.currentStage = currentStage + 1;
-    updateRequest(currentRequest);
-    goToStage(currentStage + 1);
-    showToast('Published to ' + STAGES[currentStage - 1].name, 'success');
-}
-function checkApproval() {
-    collectFormData();
-    const approvals = [currentRequest.data.cisoApproval, currentRequest.data.ctoApproval, currentRequest.data.opsApproval];
-    const approvedCount = approvals.filter(a => a === 'Approved').length;
-    const rejectedCount = approvals.filter(a => a === 'Rejected').length;
-    if (rejectedCount > 0) {
-        showToast('One or more approvers rejected. Please handle rejection.', 'error');
-        return;
-    }
-    if (approvedCount >= 2) {
-        currentRequest.status = 'approved';
-        updateRequest(currentRequest);
-        renderFlowBar();
-        renderStageActions();
-        showToast('REQUEST APPROVED (2 of 3) - VM Provisioning Proceeds!', 'success');
-    } else {
-        updateRequest(currentRequest);
-        showToast('Need at least 2 approvals. Currently: ' + approvedCount + ' of 3', 'info');
-    }
-}
-function openRejectModal() { document.getElementById('reject-modal').classList.add('show'); document.getElementById('reject-reason').value = ''; }
-function closeRejectModal() { document.getElementById('reject-modal').classList.remove('show'); }
-function confirmReject() {
-    const reason = document.getElementById('reject-reason').value;
-    if (!reason.trim()) { showToast('Enter rejection reason', 'error'); return; }
-    collectFormData();
-    currentRequest.rejections = currentRequest.rejections || [];
-    currentRequest.rejections.push({ stage: currentStage, reason, date: new Date().toLocaleString() });
-    currentRequest.currentStage = currentStage - 1;
-    updateRequest(currentRequest);
-    closeRejectModal();
-    goToStage(currentStage - 1);
-    showToast('Rejected - sent back to ' + STAGES[currentStage - 2].name, 'error');
-}
+            const fieldLabels = {
+                serverName: 'Server Name', appName: 'Application Name', purpose: 'Purpose',
+                langFramework: 'Language/Framework', environment: 'Environment',
+                concurrentUsers: '# Expected Concurrent Users', dbms: 'DBMS', gitRepo: 'GIT Repo',
+                accessGroup: 'Access Group', sla: 'SLA', fqdnSuggestion: 'FQDN Suggestion',
+                authMethod: 'Authentication Method', sensitivityLevel: 'Sensitivity Level',
+                serverResources: 'Server Resources', webServer: 'Web Server', database: 'Database',
+                hostname: 'Hostname', hardware: 'Hardware', uplinkSpeed: 'Uplink Speed',
+                hostType: 'Host Type', dcPort: 'DC Port', locationDC: 'Location DC',
+                rackRow: 'Rack Row', rackU: 'Rack U#', cluster: 'Cluster',
+                ipAddress: 'IP Address', subnetMask: 'Subnet Mask', vlanId: 'VLAN ID',
+                gateway: 'Gateway', nocPort: 'NOC Port', vip: 'Virtual IP', virtualPort: 'Virtual Port',
+                virtualFQDN: 'Virtual FQDN', netSwitch: 'Network Switch', netFirewall: 'Network Firewall',
+                vdom: 'VDOM', iocApproval: 'IOC Manager Approval',
+                cisoComments: 'CISO Comments', opsComments: 'Ops Manager Comments'
+            };
+            const services = ['svc_https','svc_http','svc_ssh','svc_dns','svc_udp','svc_ftp','svc_smtp','svc_rdp'];
 
-// ===== EXPORT =====
-function exportToFile() {
-    if (!currentRequest) { showToast('Open a request first', 'error'); return; }
-    collectFormData();
-    const d = currentRequest.data;
-    const admin = getAdmin();
-    const rg = admin.resourceGroups.find(r => r.name === d.serverResources);
-    let t = '='.repeat(50) + '\n';
-    t += '  VM PROVISIONING REQUEST: ' + currentRequest.id + '\n';
-    t += '  Created: ' + currentRequest.created + '\n';
-    t += '  Status: ' + currentRequest.status.toUpperCase() + '\n';
-    t += '='.repeat(50) + '\n\n';
+            // Stage 1
+            text += '--- STAGE 1: REQUEST ---\n';
+            ['serverName','appName','purpose','langFramework','environment','concurrentUsers','dbms','gitRepo','accessGroup','sla','fqdnSuggestion','authMethod'].forEach(f => {
+                text += '  ' + (fieldLabels[f]||f) + ': ' + (currentRequest.data[f] || '') + '\n';
+            });
 
-    t += '--- STAGE 1: REQUEST ---\n';
-    [['Server Name',d.serverName],['Application',d.appName],['Purpose',d.purpose],['Language/Framework',d.langFramework],['Environment',d.environment],['Concurrent Users',d.concurrentUsers],['DBMS',d.dbms],['GIT Repo',d.gitRepo],['Access Group',d.accessGroup],['SLA',d.sla],['FQDN',d.fqdnSuggestion],['Auth Method',d.authMethod]].forEach(([k,v]) => t += `  ${k}: ${v||''}\n`);
+            // Stage 2
+            text += '\n--- STAGE 2: SYS ADMIN ---\n';
+            ['sensitivityLevel','serverResources','webServer','database','hostname'].forEach(f => {
+                text += '  ' + (fieldLabels[f]||f) + ': ' + (currentRequest.data[f] || '') + '\n';
+            });
+            const enabledSvc = services.filter(s => currentRequest.data[s]).map(s => s.replace('svc_','').toUpperCase());
+            text += '  Services: ' + (enabledSvc.join(', ') || 'None') + '\n';
 
-    t += '\n--- STAGE 2: SYS ADMIN ---\n';
-    [['Sensitivity Level',d.sensitivityLevel],['Server Resources',d.serverResources + (rg?` (${rg.vcpu} vCPU, ${rg.ram} RAM, ${rg.hdd} HDD)`:'')],['Web Server',d.webServer],['Database',d.database],['Database Name',d.databaseName],['Hostname',d.hostname]].forEach(([k,v]) => t += `  ${k}: ${v||''}\n`);
-    t += '  Services:\n';
-    (currentRequest.services||[]).forEach(s => t += `    ${s.protocol} ${s.port} ${s.name}\n`);
+            // Stage 3
+            text += '\n--- STAGE 3: DATA CENTER ---\n';
+            ['hardware','uplinkSpeed','hostType','dcPort','locationDC','rackRow','rackU','cluster'].forEach(f => {
+                text += '  ' + (fieldLabels[f]||f) + ': ' + (currentRequest.data[f] || '') + '\n';
+            });
 
-    t += '\n--- STAGE 3: DATA CENTER ---\n';
-    [['Hardware',d.hardware],['Uplink Speed',d.uplinkSpeed],['Host Type',d.hostType],['Port #',d.dcPort],['DC',d.locationDC],['Rack Row',d.rackRow],['Rack U#',d.rackU],['Cluster',d.cluster]].forEach(([k,v]) => t += `  ${k}: ${v||''}\n`);
+            // Stage 4A
+            text += '\n--- STAGE 4A: NOC ---\n';
+            ['ipAddress','subnetMask','vlanId','gateway','nocPort','vip','virtualPort','virtualFQDN','netSwitch','netFirewall'].forEach(f => {
+                text += '  ' + (fieldLabels[f]||f) + ': ' + (currentRequest.data[f] || '') + '\n';
+            });
 
-    t += '\n--- STAGE 4A: NOC ---\n';
-    [['IP Address',d.ipAddress],['Subnet Mask',d.subnetMask],['VLAN ID',d.vlanId],['Gateway',d.gateway],['Port',d.nocPort],['VIP',d.vip],['Virtual Port',d.virtualPort],['Virtual FQDN',d.virtualFQDN]].forEach(([k,v]) => t += `  ${k}: ${v||''}\n`);
-    t += '  Network Paths:\n';
-    (currentRequest.netPaths||[]).forEach(n => t += `    ${n.device} | Port: ${n.port} | Speed: ${n.speed}\n`);
+            // Stage 4B
+            text += '\n--- STAGE 4B: SOC ---\n';
+            text += '  VDOM: ' + (currentRequest.data.vdom || '') + '\n';
+            if (currentRequest.policies && currentRequest.policies.length > 0) {
+                currentRequest.policies.forEach((p, i) => {
+                    text += '  Policy #' + (i+1) + ':\n';
+                    text += '    Name: ' + (p.name||'') + '\n';
+                    text += '    Src Interface: ' + (p.srcInt||'') + '\n';
+                    text += '    Dst Interface: ' + (p.dstInt||'') + '\n';
+                    text += '    Src IP: ' + (p.srcIp||'') + '\n';
+                    text += '    Dst IP: ' + (p.dstIp||'') + '\n';
+                    text += '    Services: ' + (p.services||'') + '\n';
+                    text += '    Schedule: ' + (p.schedule||'') + '\n';
+                    text += '    Action: ' + (p.action||'') + '\n';
+                    text += '    Security Profile: ' + (p.secProfile||'') + '\n';
+                });
+            }
+            text += '  IOC Manager Approval: ' + (currentRequest.data.iocApproval || '') + '\n';
 
-    t += '\n--- STAGE 4B: SOC ---\n';
-    t += `  VDOM: ${d.vdom||''}\n`;
-    (currentRequest.policies||[]).forEach((p,i) => {
-        t += `  Policy #${i+1}:\n`;
-        t += `    Name: ${p.name||''}\n    Src Int: ${p.srcInt||''}\n    Dst Int: ${p.dstInt||''}\n    Src IP: ${p.srcIp||''}\n    Dst IP: ${p.dstIp||''}\n    Services: ${p.services||''}\n    Schedule: ${p.schedule||''}\n    Action: ${p.action||''}\n    Security Profiles: ${(p.secProfiles||[]).join(', ')}\n`;
-    });
+            // Stage 5 & 6
+            text += '\n--- STAGE 5: CISO APPROVAL ---\n';
+            text += '  Comments: ' + (currentRequest.data.cisoComments || '') + '\n';
 
-    t += '\n--- STAGE 5: IOC MANAGER ---\n';
-    t += `  Comments: ${d.iocComments||''}\n`;
+            text += '\n--- STAGE 6: OPS MANAGER APPROVAL ---\n';
+            text += '  Comments: ' + (currentRequest.data.opsComments || '') + '\n';
 
-    t += '\n--- STAGE 6: APPROVAL ---\n';
-    t += `  CISO: ${d.cisoApproval||'Pending'}\n  CTO: ${d.ctoApproval||'Pending'}\n  Ops Officer: ${d.opsApproval||'Pending'}\n`;
-    t += `  Comments: ${d.approvalComments||''}\n`;
+            // Rejections
+            if (currentRequest.rejections && currentRequest.rejections.length > 0) {
+                text += '\n--- REJECTION HISTORY ---\n';
+                currentRequest.rejections.forEach(r => {
+                    text += '  Stage ' + r.stage + ' (' + STAGES[r.stage-1].name + ') on ' + r.date + ':\n';
+                    text += '    Reason: ' + r.reason + '\n';
+                });
+            }
 
-    if (currentRequest.rejections && currentRequest.rejections.length) {
-        t += '\n--- REJECTION HISTORY ---\n';
-        currentRequest.rejections.forEach(r => t += `  Stage ${r.stage} (${STAGES[r.stage-1].name}) on ${r.date}: ${r.reason}\n`);
-    }
+            // Download
+            const blob = new Blob([text], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = currentRequest.id + '.txt';
+            a.click();
+            showToast('Exported to ' + currentRequest.id + '.txt', 'info');
+        }
 
-    const blob = new Blob([t], { type: 'text/plain' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = currentRequest.id + '.txt';
-    a.click();
-    showToast('Exported to ' + currentRequest.id + '.txt', 'info');
-}
+        // ---- Toast ----
+        function showToast(msg, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast toast-' + type + ' show';
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
 
-// ===== TOAST =====
-function showToast(msg, type) {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.className = 'toast toast-' + type + ' show';
-    setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-// ===== INIT =====
-showHome();
-</script>
+        // ---- Init ----
+        showHome();
+    </script>
 </body>
 </html>
