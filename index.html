@@ -584,6 +584,237 @@
         }
         .empty-state h3 { font-size: 20px; color: #7a8a99; margin-bottom: 10px; }
 
+        /* Gear button */
+        .btn-gear {
+            background: #1a2a4a;
+            color: #f0ad4e;
+            border: 1px solid #f0ad4e;
+            width: 38px; height: 38px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .btn-gear:hover { background: #2a3a5a; transform: translateY(-1px); }
+
+        /* Admin Settings Modal */
+        .admin-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .admin-modal-overlay.show { display: flex; }
+        .admin-modal {
+            background: #1a2d40;
+            border: 1px solid #2a4a6a;
+            border-radius: 14px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .admin-modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f0ad4e;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #253545;
+            margin-bottom: 20px;
+        }
+        .admin-tab {
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #7a8a99;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+        .admin-tab:hover { color: #c0c0c0; }
+        .admin-tab.active {
+            color: #4a9eff;
+            border-bottom-color: #4a9eff;
+        }
+        .admin-tab-content { display: none; }
+        .admin-tab-content.active { display: block; }
+        .admin-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .admin-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #12202e;
+            border: 1px solid #2a3a4a;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 14px;
+            color: #e0e0e0;
+        }
+        .admin-list-item .btn-remove-admin {
+            background: none;
+            border: 1px solid #d9534f;
+            color: #d9534f;
+            padding: 3px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .admin-add-row {
+            display: flex;
+            gap: 8px;
+        }
+        .admin-add-row input {
+            flex: 1;
+            background: #1a2a3a;
+            border: 1px solid #2a4a6a;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #e0e0e0;
+            font-size: 13px;
+        }
+        .admin-add-row input:focus {
+            outline: none;
+            border-color: #4a9eff;
+        }
+        .btn-admin-add {
+            background: #1a3320;
+            color: #5cb85c;
+            border: 1px solid #5cb85c;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .btn-admin-add:hover { background: #2a4330; }
+        .btn-admin-close {
+            background: #253545;
+            color: #b0b0b0;
+            border: 1px solid #3a4a5a;
+            padding: 4px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* Radio group for DB Name */
+        .radio-group {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #c0c0c0;
+        }
+        .radio-item input[type="radio"] {
+            accent-color: #4a9eff;
+            cursor: pointer;
+        }
+        .db-name-input-wrapper {
+            margin-top: 8px;
+        }
+
+        /* Multi-select checkbox dropdown */
+        .multiselect-wrapper {
+            position: relative;
+        }
+        .multiselect-trigger {
+            background: #1a2a3a;
+            border: 1px solid #2a4a6a;
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: #e0e0e0;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 40px;
+        }
+        .multiselect-trigger:hover { border-color: #4a9eff; }
+        .multiselect-trigger .arrow { color: #4a9eff; font-size: 12px; }
+        .multiselect-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #12202e;
+            border: 1px solid #4a9eff;
+            border-radius: 0 0 6px 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 50;
+        }
+        .multiselect-dropdown.open { display: block; }
+        .multiselect-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #c0c0c0;
+            transition: background 0.15s;
+        }
+        .multiselect-option:hover { background: #1a2a3a; }
+        .multiselect-option input[type="checkbox"] {
+            accent-color: #4a9eff;
+            cursor: pointer;
+        }
+        .multiselect-disabled {
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #5a6a7a;
+            font-style: italic;
+        }
+        .multiselect-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            flex: 1;
+        }
+        .multiselect-tag {
+            background: #1a3320;
+            color: #5cb85c;
+            border: 1px solid #5cb85c;
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-size: 11px;
+        }
+        .multiselect-placeholder { color: #5a6a7a; }
+
         @media (max-width: 700px) {
             .flow-step-box { min-width: 70px; padding: 6px 6px; }
             .flow-step-box .step-name { font-size: 9px; }
@@ -599,6 +830,7 @@
     <div class="top-bar">
         <h1>VM PROVISIONING WORKFLOW</h1>
         <div class="top-bar-actions">
+            <button class="btn-gear" onclick="openAdminSettings()" title="Admin Settings">&#9881;</button>
             <button class="btn btn-new" onclick="showHome()">All Requests</button>
             <button class="btn btn-export" onclick="exportToFile()">Export to Text</button>
         </div>
@@ -640,7 +872,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Application Name</label>
-                            <input type="text" class="form-input" data-field="appName" placeholder="e.g. Moneyline Portal">
+                            <input type="text" class="form-input" data-field="appName" placeholder="e.g. Customer Portal">
                         </div>
                         <div class="form-group full-width">
                             <label class="form-label">Purpose</label>
@@ -693,7 +925,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">FQDN Suggestion</label>
-                            <input type="text" class="form-input" data-field="fqdnSuggestion" placeholder="e.g. app.jmmb.com">
+                            <input type="text" class="form-input" data-field="fqdnSuggestion" placeholder="e.g. app.company.com">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Authentication Method</label>
@@ -753,13 +985,15 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Database</label>
-                            <select class="form-select" data-field="database">
-                                <option value="">-- Select --</option>
-                                <option value="Get from ADO alone">Get from ADO alone</option>
-                                <option value="App name">App name</option>
-                                <option value="Got existing database">Got existing database</option>
-                            </select>
+                            <label class="form-label">Database Name</label>
+                            <div class="radio-group">
+                                <label class="radio-item"><input type="radio" name="dbNameType" value="new" onchange="onDbTypeChange()"> New Database</label>
+                                <label class="radio-item"><input type="radio" name="dbNameType" value="existing" onchange="onDbTypeChange()"> Existing Database</label>
+                                <label class="radio-item"><input type="radio" name="dbNameType" value="none" onchange="onDbTypeChange()" checked> None</label>
+                            </div>
+                            <div class="db-name-input-wrapper" id="db-name-input-wrapper" style="display:none;">
+                                <input type="text" class="form-input" id="dbNameInput" data-field="databaseName" placeholder="Database name">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Hostname</label>
@@ -905,7 +1139,9 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label class="form-label">VDOM</label>
-                            <input type="text" class="form-input" data-field="vdom" placeholder="Virtual domain">
+                            <select class="form-select" data-field="vdom" id="vdom-select">
+                                <option value="">-- Select --</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -1038,6 +1274,50 @@
         </div>
     </div>
 
+    <!-- ADMIN SETTINGS MODAL -->
+    <div class="admin-modal-overlay" id="admin-modal">
+        <div class="admin-modal">
+            <div class="admin-modal-title">
+                <span>&#9881; Admin Settings</span>
+                <button class="btn-admin-close" onclick="closeAdminSettings()">Close</button>
+            </div>
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchAdminTab('resourceGroups', this)">Resource Groups</button>
+                <button class="admin-tab" onclick="switchAdminTab('clusters', this)">Clusters</button>
+                <button class="admin-tab" onclick="switchAdminTab('securityProfiles', this)">Security Profiles</button>
+                <button class="admin-tab" onclick="switchAdminTab('vdoms', this)">VDOMs</button>
+            </div>
+            <div class="admin-tab-content active" id="admin-tab-resourceGroups">
+                <div class="admin-list" id="admin-list-resourceGroups"></div>
+                <div class="admin-add-row">
+                    <input type="text" id="admin-input-resourceGroups" placeholder="e.g. Micro (1 vCPU / 1 GB RAM / 20 GB HDD)">
+                    <button class="btn-admin-add" onclick="addAdminItem('resourceGroups')">Add</button>
+                </div>
+            </div>
+            <div class="admin-tab-content" id="admin-tab-clusters">
+                <div class="admin-list" id="admin-list-clusters"></div>
+                <div class="admin-add-row">
+                    <input type="text" id="admin-input-clusters" placeholder="e.g. Hyperflex">
+                    <button class="btn-admin-add" onclick="addAdminItem('clusters')">Add</button>
+                </div>
+            </div>
+            <div class="admin-tab-content" id="admin-tab-securityProfiles">
+                <div class="admin-list" id="admin-list-securityProfiles"></div>
+                <div class="admin-add-row">
+                    <input type="text" id="admin-input-securityProfiles" placeholder="e.g. Web-Application-Profile">
+                    <button class="btn-admin-add" onclick="addAdminItem('securityProfiles')">Add</button>
+                </div>
+            </div>
+            <div class="admin-tab-content" id="admin-tab-vdoms">
+                <div class="admin-list" id="admin-list-vdoms"></div>
+                <div class="admin-add-row">
+                    <input type="text" id="admin-input-vdoms" placeholder="e.g. root">
+                    <button class="btn-admin-add" onclick="addAdminItem('vdoms')">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
@@ -1071,6 +1351,188 @@
         let policyCount = 0;
         let serviceRowCount = 0;
         let networkPathCount = 0;
+
+        // ---- Admin Data (persisted in localStorage) ----
+        function getAdminData() {
+            return JSON.parse(localStorage.getItem('vm_admin_data') || JSON.stringify({
+                resourceGroups: ['Micro (1 vCPU / 1 GB RAM / 20 GB HDD)', 'Small (2 vCPU / 4 GB RAM / 50 GB HDD)', 'Medium (4 vCPU / 8 GB RAM / 100 GB HDD)', 'Large (8 vCPU / 16 GB RAM / 250 GB HDD)', 'XLarge (16 vCPU / 32 GB RAM / 500 GB HDD)'],
+                clusters: ['Hyperflex', 'VxRail'],
+                securityProfiles: [],
+                vdoms: []
+            }));
+        }
+        function saveAdminData(data) {
+            localStorage.setItem('vm_admin_data', JSON.stringify(data));
+        }
+
+        function openAdminSettings() {
+            document.getElementById('admin-modal').classList.add('show');
+            renderAdminLists();
+        }
+        function closeAdminSettings() {
+            document.getElementById('admin-modal').classList.remove('show');
+            // Refresh dropdowns if a request is open
+            if (currentRequest) {
+                populateVdomDropdown();
+                populateSecurityProfileDropdowns();
+            }
+        }
+        function switchAdminTab(tabId, btn) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('admin-tab-' + tabId).classList.add('active');
+        }
+        function renderAdminLists() {
+            const data = getAdminData();
+            ['resourceGroups', 'clusters', 'securityProfiles', 'vdoms'].forEach(key => {
+                const list = document.getElementById('admin-list-' + key);
+                list.innerHTML = data[key].map((item, i) =>
+                    `<div class="admin-list-item"><span>${item}</span><button class="btn-remove-admin" onclick="removeAdminItem('${key}', ${i})">Remove</button></div>`
+                ).join('');
+            });
+        }
+        function addAdminItem(key) {
+            const input = document.getElementById('admin-input-' + key);
+            const val = input.value.trim();
+            if (!val) return;
+            const data = getAdminData();
+            if (data[key].includes(val)) { showToast('Already exists', 'error'); return; }
+            data[key].push(val);
+            saveAdminData(data);
+            input.value = '';
+            renderAdminLists();
+        }
+        function removeAdminItem(key, idx) {
+            const data = getAdminData();
+            data[key].splice(idx, 1);
+            saveAdminData(data);
+            renderAdminLists();
+        }
+
+        // ---- VDOM dropdown population ----
+        function populateVdomDropdown() {
+            const sel = document.getElementById('vdom-select');
+            if (!sel) return;
+            const current = sel.value;
+            const data = getAdminData();
+            sel.innerHTML = '<option value="">-- Select --</option>' +
+                data.vdoms.map(v => `<option value="${v}" ${v === current ? 'selected' : ''}>${v}</option>`).join('');
+        }
+
+        // ---- Security Profile dropdown population in policies ----
+        function populateSecurityProfileDropdowns() {
+            const data = getAdminData();
+            document.querySelectorAll('[data-pfield="secProfile"]').forEach(el => {
+                if (el.tagName === 'SELECT') {
+                    const current = el.value;
+                    el.innerHTML = '<option value="">-- Select --</option>' +
+                        data.securityProfiles.map(p => `<option value="${p}" ${p === current ? 'selected' : ''}>${p}</option>`).join('');
+                }
+            });
+        }
+
+        // ---- Database Name logic ----
+        function onDbTypeChange() {
+            const selected = document.querySelector('input[name="dbNameType"]:checked');
+            const wrapper = document.getElementById('db-name-input-wrapper');
+            const input = document.getElementById('dbNameInput');
+            if (!selected || !wrapper || !input) return;
+
+            if (selected.value === 'new') {
+                wrapper.style.display = 'block';
+                // Auto-populate from appName
+                const appName = currentRequest ? (currentRequest.data.appName || '') : '';
+                if (appName && !input.value) {
+                    input.value = appName.toLowerCase().replace(/\s+/g, '-') + '-db';
+                }
+            } else if (selected.value === 'existing') {
+                wrapper.style.display = 'block';
+                input.placeholder = 'Enter existing database name';
+            } else {
+                wrapper.style.display = 'none';
+                input.value = '';
+            }
+
+            // Store the type
+            if (currentRequest) {
+                currentRequest.data.dbNameType = selected.value;
+            }
+        }
+
+        function setupAppNameListener() {
+            const appNameInput = document.querySelector('[data-field="appName"]');
+            if (appNameInput) {
+                appNameInput.addEventListener('input', function() {
+                    const radio = document.querySelector('input[name="dbNameType"]:checked');
+                    if (radio && radio.value === 'new') {
+                        const dbInput = document.getElementById('dbNameInput');
+                        if (dbInput) {
+                            dbInput.value = this.value.toLowerCase().replace(/\s+/g, '-') + '-db';
+                        }
+                    }
+                });
+            }
+        }
+
+        // ---- Services multi-select for policies ----
+        function getServiceOptions() {
+            if (!currentRequest || !currentRequest.services || currentRequest.services.length === 0) {
+                return [];
+            }
+            return currentRequest.services.map(s => ({
+                value: s.serviceName + ' (' + (s.protocol || 'TCP') + '/' + s.port + ')',
+                label: (s.serviceName || 'Unnamed') + ' (' + (s.protocol || 'TCP') + '/' + (s.port || '?') + ')'
+            }));
+        }
+
+        function buildServicesMultiselect(policyIdx, selectedValues) {
+            const options = getServiceOptions();
+            const selected = selectedValues ? selectedValues.split(', ').filter(v => v) : [];
+
+            if (options.length === 0) {
+                return `<div class="multiselect-wrapper"><div class="multiselect-disabled">No services defined in Sys Admin</div></div>`;
+            }
+
+            const tags = selected.length > 0
+                ? selected.map(s => `<span class="multiselect-tag">${s}</span>`).join('')
+                : '<span class="multiselect-placeholder">Select services...</span>';
+
+            let html = `<div class="multiselect-wrapper" id="ms-wrapper-${policyIdx}">`;
+            html += `<div class="multiselect-trigger" onclick="toggleMultiselect(${policyIdx})"><div class="multiselect-tags">${tags}</div><span class="arrow">&#9660;</span></div>`;
+            html += `<div class="multiselect-dropdown" id="ms-dropdown-${policyIdx}">`;
+            options.forEach(opt => {
+                const checked = selected.includes(opt.value) ? 'checked' : '';
+                html += `<label class="multiselect-option"><input type="checkbox" ${checked} onchange="onServiceSelect(${policyIdx})" value="${opt.value}"> ${opt.label}</label>`;
+            });
+            html += `</div></div>`;
+            return html;
+        }
+
+        function toggleMultiselect(policyIdx) {
+            const dd = document.getElementById('ms-dropdown-' + policyIdx);
+            if (dd) dd.classList.toggle('open');
+        }
+
+        function onServiceSelect(policyIdx) {
+            const dd = document.getElementById('ms-dropdown-' + policyIdx);
+            const wrapper = document.getElementById('ms-wrapper-' + policyIdx);
+            if (!dd || !wrapper) return;
+            const checked = Array.from(dd.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+            const trigger = wrapper.querySelector('.multiselect-tags');
+            if (trigger) {
+                trigger.innerHTML = checked.length > 0
+                    ? checked.map(s => `<span class="multiselect-tag">${s}</span>`).join('')
+                    : '<span class="multiselect-placeholder">Select services...</span>';
+            }
+        }
+
+        // Close multiselect dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.multiselect-wrapper')) {
+                document.querySelectorAll('.multiselect-dropdown.open').forEach(dd => dd.classList.remove('open'));
+            }
+        });
 
         // ---- Data persistence (localStorage) ----
         function getAllRequests() {
@@ -1158,6 +1620,8 @@
             loadServices();
             loadNetworkPaths();
             updateResourceSummary();
+            setupAppNameListener();
+            populateVdomDropdown();
         }
 
         // ---- Flow bar ----
@@ -1418,6 +1882,11 @@
                 if (el.type === 'checkbox') currentRequest.data[el.dataset.field] = el.checked;
                 else currentRequest.data[el.dataset.field] = el.value;
             });
+            // Collect DB name type radio
+            if (currentStage === 2) {
+                const dbRadio = document.querySelector('input[name="dbNameType"]:checked');
+                if (dbRadio) currentRequest.data.dbNameType = dbRadio.value;
+            }
             if (currentStage === 5) collectPolicies();
             if (currentStage === 2) collectServices();
             if (currentStage === 4) collectNetworkPaths();
@@ -1432,6 +1901,26 @@
                     else el.value = val || '';
                 });
             });
+            // Restore DB name type radio
+            const dbType = currentRequest.data.dbNameType || 'none';
+            const dbRadio = document.querySelector(`input[name="dbNameType"][value="${dbType}"]`);
+            if (dbRadio) {
+                dbRadio.checked = true;
+                onDbTypeChange();
+            }
+            // Restore DB name input value
+            const dbNameInput = document.getElementById('dbNameInput');
+            if (dbNameInput && currentRequest.data.databaseName) {
+                dbNameInput.value = currentRequest.data.databaseName;
+            }
+            // Populate VDOM dropdown
+            populateVdomDropdown();
+            // Re-set VDOM value after populating
+            const vdomVal = currentRequest.data.vdom;
+            if (vdomVal) {
+                const vdomSel = document.getElementById('vdom-select');
+                if (vdomSel) vdomSel.value = vdomVal;
+            }
         }
 
         // ---- Services (repeatable rows) ----
@@ -1559,13 +2048,18 @@
         }
 
         // ---- Policies ----
-        function addPolicy() {
+        function addPolicy(existingServices) {
             policyCount++;
             const idx = policyCount;
             const container = document.getElementById('policy-container');
             const div = document.createElement('div');
             div.className = 'policy-block';
             div.id = 'policy-' + idx;
+
+            const adminData = getAdminData();
+            const secProfileOptions = adminData.securityProfiles.map(p => `<option value="${p}">${p}</option>`).join('');
+            const servicesHtml = buildServicesMultiselect(idx, existingServices || '');
+
             div.innerHTML = `
                 <div class="policy-header">
                     <div class="policy-title">Policy #${idx}</div>
@@ -1577,7 +2071,7 @@
                     <div class="form-group"><label class="form-label">Destination Interface</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="dstInt" placeholder="Destination interface"></div>
                     <div class="form-group"><label class="form-label">Source IP</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="srcIp" placeholder="Source IP"></div>
                     <div class="form-group"><label class="form-label">Destination IP</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="dstIp" placeholder="Destination IP"></div>
-                    <div class="form-group"><label class="form-label">Services</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="services" placeholder="HTTPS, SSH, DNS..."></div>
+                    <div class="form-group"><label class="form-label">Services</label>${servicesHtml}<input type="hidden" data-policy="${idx}" data-pfield="services" value="${existingServices || ''}"></div>
                     <div class="form-group"><label class="form-label">Schedule</label>
                         <select class="form-select" data-policy="${idx}" data-pfield="schedule">
                             <option value="">-- Select --</option><option value="Always">Always</option><option value="Business Hours">Business Hours</option><option value="Custom">Custom</option>
@@ -1588,7 +2082,11 @@
                             <option value="">-- Select --</option><option value="Accept">Accept</option><option value="Drop">Drop</option><option value="Deny">Deny</option>
                         </select>
                     </div>
-                    <div class="form-group"><label class="form-label">Security Profile</label><input type="text" class="form-input" data-policy="${idx}" data-pfield="secProfile" placeholder="Security profile"></div>
+                    <div class="form-group"><label class="form-label">Security Profile</label>
+                        <select class="form-select" data-policy="${idx}" data-pfield="secProfile">
+                            <option value="">-- Select --</option>${secProfileOptions}
+                        </select>
+                    </div>
                 </div>`;
             container.appendChild(div);
         }
@@ -1600,7 +2098,16 @@
             const policies = [];
             document.querySelectorAll('.policy-block').forEach(block => {
                 const policy = {};
+                const pIdx = block.id.replace('policy-', '');
                 block.querySelectorAll('[data-pfield]').forEach(el => {
+                    if (el.dataset.pfield === 'services' && el.type === 'hidden') {
+                        // Sync from multiselect checkboxes
+                        const dd = document.getElementById('ms-dropdown-' + pIdx);
+                        if (dd) {
+                            const checked = Array.from(dd.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+                            el.value = checked.join(', ');
+                        }
+                    }
                     policy[el.dataset.pfield] = el.value;
                 });
                 if (Object.values(policy).some(v => v)) policies.push(policy);
@@ -1613,9 +2120,10 @@
             policyCount = 0;
             if (currentRequest.policies && currentRequest.policies.length > 0) {
                 currentRequest.policies.forEach(p => {
-                    addPolicy();
+                    addPolicy(p.services || '');
                     const block = document.getElementById('policy-' + policyCount);
                     Object.keys(p).forEach(key => {
+                        if (key === 'services') return; // handled by multi-select
                         const el = block.querySelector(`[data-pfield="${key}"]`);
                         if (el) el.value = p[key];
                     });
@@ -1763,7 +2271,7 @@
                 concurrentUsers: '# Expected Concurrent Users', dbms: 'DBMS', gitRepo: 'GIT Repo',
                 accessGroup: 'Access Group', sla: 'SLA', fqdnSuggestion: 'FQDN Suggestion',
                 authMethod: 'Authentication Method', sensitivityLevel: 'Sensitivity Level',
-                resourceGroup: 'Resource Group', webServer: 'Web Server', database: 'Database',
+                resourceGroup: 'Resource Group', webServer: 'Web Server', databaseName: 'Database Name',
                 hostname: 'Hostname', hardware: 'Hardware', uplinkSpeed: 'Uplink Speed',
                 hostType: 'Host Type', dcPort: 'DC Port', locationDC: 'Location DC',
                 rackRow: 'Rack Row', rackU: 'Rack U#', cluster: 'Cluster',
@@ -1782,9 +2290,14 @@
 
             // Stage 2
             text += '\n--- STAGE 2: SYS ADMIN ---\n';
-            ['sensitivityLevel','resourceGroup','webServer','database','hostname'].forEach(f => {
+            ['sensitivityLevel','resourceGroup','webServer','hostname'].forEach(f => {
                 text += '  ' + (fieldLabels[f]||f) + ': ' + (currentRequest.data[f] || '') + '\n';
             });
+            const dbType = currentRequest.data.dbNameType || 'none';
+            text += '  Database Name Type: ' + dbType + '\n';
+            if (dbType !== 'none') {
+                text += '  Database Name: ' + (currentRequest.data.databaseName || '') + '\n';
+            }
             if (currentRequest.services && currentRequest.services.length > 0) {
                 text += '  Services:\n';
                 currentRequest.services.forEach((s, i) => {
