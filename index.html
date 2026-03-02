@@ -1724,13 +1724,20 @@
                 currentRequest.approvals[currentStage] = 'rejected';
             }
 
-            // Send back to previous stage
-            currentRequest.currentStage = currentStage - 1;
+            // Send back to appropriate stage
+            // NOC(4), SOC(5), IOC(6) all send back to DataCenter(3)
+            let sendBackTo;
+            if (currentStage >= 4 && currentStage <= 6) {
+                sendBackTo = 3; // DataCenter
+            } else {
+                sendBackTo = currentStage - 1;
+            }
+            currentRequest.currentStage = sendBackTo;
             currentRequest.status = 'in_progress';
             updateRequest(currentRequest);
             closeRejectModal();
-            goToStage(currentStage - 1);
-            showToast('Rejected -- sent back to ' + STAGES[currentStage - 2].name, 'error');
+            goToStage(sendBackTo);
+            showToast('Rejected -- sent back to ' + STAGES[sendBackTo - 1].name, 'error');
         }
 
         // ---- Export ----
