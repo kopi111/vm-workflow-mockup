@@ -43,6 +43,7 @@
             letter-spacing: 0.5px;
         }
         .btn:hover { transform: translateY(-1px); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         .btn-save { background: #3d3215; color: #f0ad4e; border: 1px solid #f0ad4e; }
         .btn-save:hover { background: #4d4225; }
         .btn-publish { background: #1a3320; color: #5cb85c; border: 1px solid #5cb85c; }
@@ -71,9 +72,9 @@
             background: #1a2a3a;
             border: 2px solid #253545;
             border-radius: 8px;
-            padding: 8px 16px;
+            padding: 8px 14px;
             text-align: center;
-            min-width: 120px;
+            min-width: 100px;
             transition: all 0.3s;
             position: relative;
         }
@@ -101,7 +102,7 @@
         .flow-step-box.completed .step-num { color: #5cb85c; }
         .flow-step-box.rejected .step-num { color: #d9534f; }
         .flow-step-box .step-name {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #fff;
             margin-top: 1px;
@@ -109,7 +110,7 @@
         .flow-arrow {
             color: #4a9eff;
             font-size: 22px;
-            margin: 0 4px;
+            margin: 0 3px;
             user-select: none;
         }
 
@@ -148,7 +149,7 @@
             background: #4a9eff;
             color: #fff;
             font-weight: 800;
-            font-size: 18px;
+            font-size: 16px;
             width: 42px; height: 42px;
             border-radius: 50%;
             display: flex;
@@ -290,6 +291,31 @@
         }
         .btn-add-policy:hover { background: #1e3550; }
 
+        /* Repeatable row (services, network paths) */
+        .repeatable-container { display: flex; flex-direction: column; gap: 10px; }
+        .repeatable-row {
+            background: #12202e;
+            border: 1px solid #2a3a4a;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        .repeatable-row .form-group { flex: 1; min-width: 140px; }
+        .btn-remove-row {
+            background: none;
+            border: 1px solid #d9534f;
+            color: #d9534f;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            align-self: flex-end;
+            flex-shrink: 0;
+        }
+
         /* Approver card */
         .approver-card {
             display: flex;
@@ -312,6 +338,144 @@
         }
         .approver-name { font-size: 20px; font-weight: 700; color: #fff; }
         .approver-role { font-size: 14px; color: #7a8a99; margin-top: 4px; }
+
+        /* Quorum tracker */
+        .quorum-tracker {
+            background: #12202e;
+            border: 1px solid #2a3a4a;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .quorum-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e0a040;
+            margin-bottom: 12px;
+        }
+        .quorum-items { display: flex; gap: 15px; flex-wrap: wrap; }
+        .quorum-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #1a2a3a;
+            border: 1px solid #253545;
+            border-radius: 8px;
+            padding: 10px 16px;
+            min-width: 140px;
+        }
+        .quorum-dot {
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            background: #3a4a5a;
+            flex-shrink: 0;
+        }
+        .quorum-dot.approved { background: #5cb85c; }
+        .quorum-dot.rejected { background: #d9534f; }
+        .quorum-dot.pending { background: #f0ad4e; }
+        .quorum-label { font-size: 13px; color: #c0c0c0; }
+        .quorum-status { font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .quorum-status.approved { color: #5cb85c; }
+        .quorum-status.rejected { color: #d9534f; }
+        .quorum-status.pending { color: #f0ad4e; }
+        .quorum-result {
+            margin-top: 12px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+        }
+        .quorum-result.met { background: #1a3320; color: #5cb85c; border: 1px solid #5cb85c; }
+        .quorum-result.not-met { background: #1a2a4a; color: #7a8a99; border: 1px solid #3a4a5a; }
+
+        /* IOC status badges */
+        .ioc-status-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .ioc-status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #1a2a3a;
+            border: 1px solid #253545;
+            border-radius: 8px;
+            padding: 12px 20px;
+        }
+        .ioc-status-badge .ioc-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+        }
+        .ioc-dot.saved { background: #5cb85c; }
+        .ioc-dot.not-saved { background: #d9534f; }
+
+        /* Resource group summary */
+        .resource-summary {
+            background: #12202e;
+            border: 1px solid #2a3a4a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #c0c0c0;
+        }
+        .resource-summary strong { color: #e0a040; }
+
+        /* Collapsible summary */
+        .collapsible-summary {
+            background: #12202e;
+            border: 1px solid #2a3a4a;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            cursor: pointer;
+            background: #152230;
+            border-bottom: 1px solid #2a3a4a;
+            transition: background 0.2s;
+        }
+        .collapsible-header:hover { background: #1a2a3a; }
+        .collapsible-header h4 {
+            font-size: 14px;
+            color: #e0a040;
+            font-weight: 700;
+        }
+        .collapsible-arrow {
+            color: #4a9eff;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+        .collapsible-body {
+            display: none;
+            padding: 16px 20px;
+        }
+        .collapsible-body.open { display: block; }
+        .summary-stage-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4a9eff;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #253545;
+        }
+        .summary-stage-title:first-child { margin-top: 0; }
+        .summary-field {
+            display: flex;
+            gap: 8px;
+            padding: 3px 0;
+            font-size: 13px;
+        }
+        .summary-field .sf-label { color: #7a8a99; min-width: 160px; }
+        .summary-field .sf-value { color: #e0e0e0; }
 
         /* Reject modal */
         .modal-overlay {
@@ -421,8 +585,8 @@
         .empty-state h3 { font-size: 20px; color: #7a8a99; margin-bottom: 10px; }
 
         @media (max-width: 700px) {
-            .flow-step-box { min-width: 80px; padding: 6px 8px; }
-            .flow-step-box .step-name { font-size: 10px; }
+            .flow-step-box { min-width: 70px; padding: 6px 6px; }
+            .flow-step-box .step-name { font-size: 9px; }
             .flow-arrow { font-size: 16px; margin: 0 2px; }
             .form-grid { grid-template-columns: 1fr; }
             .top-bar { flex-direction: column; gap: 10px; }
@@ -459,7 +623,7 @@
 
         <div class="main-content">
             <!-- Stage action buttons -->
-            <div style="display:flex; justify-content:flex-end; gap:10px; margin-bottom:20px;" id="stage-actions-bar"></div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-bottom:20px; flex-wrap:wrap;" id="stage-actions-bar"></div>
 
             <!-- STAGE 1: REQUEST -->
             <div class="stage-panel" id="stage-1">
@@ -564,15 +728,20 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Server Resources</label>
-                            <select class="form-select" data-field="serverResources">
+                            <label class="form-label">Resource Group</label>
+                            <select class="form-select" data-field="resourceGroup" onchange="updateResourceSummary()">
                                 <option value="">-- Select --</option>
-                                <option value="Micro">Micro</option>
-                                <option value="Small">Small</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Large">Large</option>
-                                <option value="XLarge">XLarge</option>
+                                <option value="Micro">Micro (1 vCPU / 1 GB RAM / 20 GB HDD)</option>
+                                <option value="Small">Small (2 vCPU / 4 GB RAM / 50 GB HDD)</option>
+                                <option value="Medium">Medium (4 vCPU / 8 GB RAM / 100 GB HDD)</option>
+                                <option value="Large">Large (8 vCPU / 16 GB RAM / 250 GB HDD)</option>
+                                <option value="XLarge">XLarge (16 vCPU / 32 GB RAM / 500 GB HDD)</option>
                             </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <div class="resource-summary" id="resource-summary" style="display:none;">
+                                <strong>Selected Resources:</strong> <span id="resource-summary-text"></span>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Web Server Implementation</label>
@@ -600,16 +769,8 @@
                 </div>
                 <div class="form-section">
                     <div class="form-section-title">Services</div>
-                    <div class="checkbox-group" id="services-checkboxes">
-                        <div class="checkbox-item"><input type="checkbox" id="svc-https" data-field="svc_https"><label for="svc-https">HTTPS</label></div>
-                        <div class="checkbox-item"><input type="checkbox" id="svc-http" data-field="svc_http"><label for="svc-http">HTTP</label></div>
-                        <div class="checkbox-item"><input type="checkbox" id="svc-ssh" data-field="svc_ssh"><label for="svc-ssh">SSH</label></div>
-                        <div class="checkbox-item"><input type="checkbox" id="svc-dns" data-field="svc_dns"><label for="svc-dns">DNS</label></div>
-                        <div class="checkbox-item"><input type="checkbox" id="svc-udp" data-field="svc_udp"><label for="svc-udp">UDP</label></div>
-                        <div class="checkbox-item"><input type="checkbox" id="svc-ftp" data-field="svc_ftp"><label for="svc-ftp">FTP</label></div>
-                        <div class="checkbox-item"><input type="checkbox" id="svc-smtp" data-field="svc_smtp"><label for="svc-smtp">SMTP</label></div>
-                        <div class="checkbox-item"><input type="checkbox" id="svc-rdp" data-field="svc_rdp"><label for="svc-rdp">RDP</label></div>
-                    </div>
+                    <div class="repeatable-container" id="services-container"></div>
+                    <div class="btn-add-policy" onclick="addServiceRow()" style="margin-top:12px;">+ Add Service</div>
                 </div>
             </div>
 
@@ -651,15 +812,15 @@
                             <input type="text" class="form-input" data-field="dcPort" placeholder="Assigned port number">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Location — DC</label>
+                            <label class="form-label">Location -- DC</label>
                             <input type="text" class="form-input" data-field="locationDC" placeholder="Data center name">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Location — Rack Row</label>
+                            <label class="form-label">Location -- Rack Row</label>
                             <input type="text" class="form-input" data-field="rackRow" placeholder="Row identifier">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Location — Rack U#</label>
+                            <label class="form-label">Location -- Rack U#</label>
                             <input type="text" class="form-input" data-field="rackU" placeholder="Rack unit number">
                         </div>
                         <div class="form-group">
@@ -678,7 +839,7 @@
             <div class="stage-panel" id="stage-4">
                 <div class="stage-title-bar">
                     <div class="stage-number">4A</div>
-                    <div><div class="stage-title">NOC — Network Operations</div><div class="stage-team">Filled by: NOC Team</div></div>
+                    <div><div class="stage-title">NOC -- Network Operations</div><div class="stage-team">Filled by: NOC Team</div></div>
                 </div>
                 <div class="form-section">
                     <div class="form-section-title">IP Scheme</div>
@@ -709,8 +870,13 @@
                     <div class="form-section-title">Virtual</div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label class="form-label">Virtual IP (VIP)</label>
+                            <label class="form-label">VIP (Virtual IP)</label>
                             <input type="text" class="form-input" data-field="vip" placeholder="Virtual IP address">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Virtual IP</label>
+                            <input type="text" class="form-input" data-field="virtualIP" placeholder="Separate Virtual IP">
+                            <span class="form-hint">Distinct from VIP above</span>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Virtual Port</label>
@@ -723,17 +889,9 @@
                     </div>
                 </div>
                 <div class="form-section">
-                    <div class="form-section-title">Network Path</div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Switch</label>
-                            <input type="text" class="form-input" data-field="netSwitch" placeholder="Switch assignment">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Firewall</label>
-                            <input type="text" class="form-input" data-field="netFirewall" placeholder="Firewall assignment">
-                        </div>
-                    </div>
+                    <div class="form-section-title">Network Paths</div>
+                    <div class="repeatable-container" id="network-paths-container"></div>
+                    <div class="btn-add-policy" onclick="addNetworkPath()" style="margin-top:12px;">+ Add Network Path</div>
                 </div>
             </div>
 
@@ -741,7 +899,7 @@
             <div class="stage-panel" id="stage-5">
                 <div class="stage-title-bar">
                     <div class="stage-number">4B</div>
-                    <div><div class="stage-title">SOC — Security Operations</div><div class="stage-team">Filled by: SOC Team</div></div>
+                    <div><div class="stage-title">SOC -- Security Operations</div><div class="stage-team">Filled by: SOC Team</div></div>
                 </div>
                 <div class="form-section">
                     <div class="form-grid">
@@ -756,32 +914,51 @@
                     <div class="policy-container" id="policy-container"></div>
                     <div class="btn-add-policy" onclick="addPolicy()" style="margin-top:12px;">+ Add Policy</div>
                 </div>
+            </div>
+
+            <!-- STAGE 6: IOC MANAGER -->
+            <div class="stage-panel" id="stage-6">
+                <div class="stage-title-bar">
+                    <div class="stage-number">5</div>
+                    <div><div class="stage-title">IOC Manager -- Gatekeeper Review</div><div class="stage-team">IOC Manager reviews NOC + SOC details</div></div>
+                </div>
+                <div class="form-section">
+                    <div class="form-section-title">Status Check</div>
+                    <div class="ioc-status-row" id="ioc-status-row">
+                        <div class="ioc-status-badge">
+                            <div class="ioc-dot" id="ioc-noc-dot"></div>
+                            <span>NOC Status: <strong id="ioc-noc-status">Not Saved</strong></span>
+                        </div>
+                        <div class="ioc-status-badge">
+                            <div class="ioc-dot" id="ioc-soc-dot"></div>
+                            <span>SOC Status: <strong id="ioc-soc-status">Not Saved</strong></span>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-section">
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">IOC Manager Approval</label>
-                            <select class="form-select" data-field="iocApproval">
-                                <option value="">-- Select --</option>
-                                <option value="Approved">Approved</option>
-                                <option value="Pending">Pending</option>
-                            </select>
+                        <div class="form-group full-width">
+                            <label class="form-label">IOC Manager Comments</label>
+                            <textarea class="form-textarea" data-field="iocComments" placeholder="IOC review comments..." style="min-height:80px;"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- STAGE 6: CISO -->
-            <div class="stage-panel" id="stage-6">
+            <!-- STAGE 7: CISO -->
+            <div class="stage-panel" id="stage-7">
                 <div class="stage-title-bar">
-                    <div class="stage-number">5</div>
+                    <div class="stage-number">6</div>
                     <div><div class="stage-title">CISO Approval</div><div class="stage-team">Chief Information Security Officer</div></div>
                 </div>
+                <div id="quorum-tracker-7"></div>
+                <div id="approval-summary-7"></div>
                 <div class="form-section">
                     <div class="approver-card">
                         <div class="approver-icon">&#128274;</div>
                         <div>
                             <div class="approver-name">CISO</div>
-                            <div class="approver-role">Reviews all stages — Security sign-off</div>
+                            <div class="approver-role">Reviews all stages -- Security sign-off</div>
                         </div>
                     </div>
                     <div class="form-grid" style="margin-top:20px;">
@@ -793,18 +970,45 @@
                 </div>
             </div>
 
-            <!-- STAGE 7: OPS MANAGER -->
-            <div class="stage-panel" id="stage-7">
+            <!-- STAGE 8: CTO -->
+            <div class="stage-panel" id="stage-8">
                 <div class="stage-title-bar">
-                    <div class="stage-number">6</div>
-                    <div><div class="stage-title">Ops Manager — Final Approval</div><div class="stage-team">Operations Manager</div></div>
+                    <div class="stage-number">7</div>
+                    <div><div class="stage-title">CTO Approval</div><div class="stage-team">Chief Technology Officer</div></div>
                 </div>
+                <div id="quorum-tracker-8"></div>
+                <div id="approval-summary-8"></div>
+                <div class="form-section">
+                    <div class="approver-card">
+                        <div class="approver-icon">&#128187;</div>
+                        <div>
+                            <div class="approver-name">CTO</div>
+                            <div class="approver-role">Reviews all stages -- Technology sign-off</div>
+                        </div>
+                    </div>
+                    <div class="form-grid" style="margin-top:20px;">
+                        <div class="form-group full-width">
+                            <label class="form-label">Comments / Notes</label>
+                            <textarea class="form-textarea" data-field="ctoComments" placeholder="CTO review comments..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STAGE 9: OPS MANAGER -->
+            <div class="stage-panel" id="stage-9">
+                <div class="stage-title-bar">
+                    <div class="stage-number">8</div>
+                    <div><div class="stage-title">Ops Manager -- Final Approval</div><div class="stage-team">Operations Manager</div></div>
+                </div>
+                <div id="quorum-tracker-9"></div>
+                <div id="approval-summary-9"></div>
                 <div class="form-section">
                     <div class="approver-card">
                         <div class="approver-icon">&#9989;</div>
                         <div>
                             <div class="approver-name">Operations Manager</div>
-                            <div class="approver-role">Final review — Once approved, VM provisioning proceeds</div>
+                            <div class="approver-role">Final review -- Once quorum reached, VM provisioning proceeds</div>
                         </div>
                     </div>
                     <div class="form-grid" style="margin-top:20px;">
@@ -838,19 +1042,35 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // 9 stages: Request, SysAdmin, DataCenter, NOC(4A), SOC(4B), IOC(5), CISO(6), CTO(7), Ops(8)
         const STAGES = [
-            { id: 1, name: 'Request', short: 'Request' },
-            { id: 2, name: 'Sys Admin', short: 'Sys Admin' },
-            { id: 3, name: 'Data Center', short: 'Data Center' },
-            { id: 4, name: 'NOC', short: 'NOC' },
-            { id: 5, name: 'SOC', short: 'SOC' },
-            { id: 6, name: 'CISO', short: 'CISO' },
-            { id: 7, name: 'Ops Manager', short: 'Ops Mgr' }
+            { id: 1, name: 'Request',      short: 'Request',   num: '1' },
+            { id: 2, name: 'Sys Admin',     short: 'Sys Admin', num: '2' },
+            { id: 3, name: 'Data Center',   short: 'Data Ctr',  num: '3' },
+            { id: 4, name: 'NOC',           short: 'NOC',       num: '4A' },
+            { id: 5, name: 'SOC',           short: 'SOC',       num: '4B' },
+            { id: 6, name: 'IOC Manager',   short: 'IOC Mgr',   num: '5' },
+            { id: 7, name: 'CISO',          short: 'CISO',      num: '6' },
+            { id: 8, name: 'CTO',           short: 'CTO',       num: '7' },
+            { id: 9, name: 'Ops Manager',   short: 'Ops Mgr',   num: '8' }
         ];
+
+        const APPROVAL_STAGES = [7, 8, 9]; // CISO, CTO, Ops
+        const APPROVAL_NAMES = { 7: 'CISO', 8: 'CTO', 9: 'Ops Manager' };
+
+        const RESOURCE_SPECS = {
+            'Micro':  '1 vCPU / 1 GB RAM / 20 GB HDD',
+            'Small':  '2 vCPU / 4 GB RAM / 50 GB HDD',
+            'Medium': '4 vCPU / 8 GB RAM / 100 GB HDD',
+            'Large':  '8 vCPU / 16 GB RAM / 250 GB HDD',
+            'XLarge': '16 vCPU / 32 GB RAM / 500 GB HDD'
+        };
 
         let currentRequest = null;
         let currentStage = 1;
         let policyCount = 0;
+        let serviceRowCount = 0;
+        let networkPathCount = 0;
 
         // ---- Data persistence (localStorage) ----
         function getAllRequests() {
@@ -887,9 +1107,9 @@
                 return;
             }
             container.innerHTML = requests.map(r => {
-                const stageInfo = STAGES[r.currentStage - 1];
+                const stageInfo = STAGES[Math.min(r.currentStage - 1, STAGES.length - 1)];
                 const statusClass = r.status === 'rejected' ? 'status-rejected' : r.status === 'approved' ? 'status-completed' : 'status-active';
-                const statusText = r.status === 'rejected' ? 'Rejected' : r.status === 'approved' ? 'Approved' : 'Stage ' + r.currentStage + ': ' + stageInfo.name;
+                const statusText = r.status === 'rejected' ? 'Rejected' : r.status === 'approved' ? 'Approved' : 'Stage ' + stageInfo.num + ': ' + stageInfo.name;
                 return `<div class="request-item" onclick="openRequest('${r.id}')">
                     <div class="request-info">
                         <h3>${r.data.serverName || r.data.appName || 'Untitled Request'}</h3>
@@ -913,7 +1133,10 @@
                 status: 'in_progress',
                 data: {},
                 policies: [],
-                rejections: []
+                services: [],
+                networkPaths: [],
+                rejections: [],
+                approvals: {} // { 7: 'approved'/'rejected', 8: ..., 9: ... }
             };
             updateRequest(req);
             openRequest(id);
@@ -921,6 +1144,10 @@
         function openRequest(id) {
             currentRequest = getRequest(id);
             if (!currentRequest) return;
+            // Ensure arrays exist for older data
+            if (!currentRequest.services) currentRequest.services = [];
+            if (!currentRequest.networkPaths) currentRequest.networkPaths = [];
+            if (!currentRequest.approvals) currentRequest.approvals = {};
             currentStage = currentRequest.currentStage;
             document.getElementById('home-view').style.display = 'none';
             document.getElementById('workflow-view').style.display = 'block';
@@ -928,6 +1155,9 @@
             goToStage(currentStage);
             loadFormData();
             loadPolicies();
+            loadServices();
+            loadNetworkPaths();
+            updateResourceSummary();
         }
 
         // ---- Flow bar ----
@@ -935,23 +1165,31 @@
             const bar = document.getElementById('flow-bar');
             bar.innerHTML = STAGES.map((s, i) => {
                 let cls = '';
-                if (s.id === currentStage) cls = 'active';
-                else if (s.id < currentRequest.currentStage) cls = 'completed';
+                if (s.id < currentRequest.currentStage) cls = 'completed';
                 if (currentRequest.rejections && currentRequest.rejections.find(r => r.stage === s.id)) cls = 'rejected';
                 if (s.id < currentRequest.currentStage) cls = 'completed';
                 if (s.id === currentStage) cls = 'active';
 
-                const arrow = i < STAGES.length - 1 ? `<div class="flow-arrow">${i === 3 ? '+' : '&#9654;'}</div>` : '';
-                const statusBadge = s.id < currentRequest.currentStage ? '<span class="status-badge status-completed">Done</span>'
-                    : s.id === currentRequest.currentStage ? '<span class="status-badge status-active">Active</span>'
-                    : '<span class="status-badge status-pending">Pending</span>';
-                if (currentRequest.status === 'approved' && s.id <= 7) {
-                    return `<div class="flow-step" onclick="goToStage(${s.id})">
-                        <div class="flow-step-box completed"><div class="step-num">Stage ${s.id <= 5 ? (s.id <= 3 ? s.id : '4' + (s.id === 4 ? 'A' : 'B')) : s.id - 1}</div><div class="step-name">${s.short}</div><span class="status-badge status-completed">Done</span></div>
-                    </div>${arrow}`;
+                // Connector: '+' between NOC(4) and SOC(5), arrow for everything else
+                let arrow = '';
+                if (i < STAGES.length - 1) {
+                    arrow = (i === 3) ? '<div class="flow-arrow">+</div>' : '<div class="flow-arrow">&#9654;</div>';
                 }
+
+                let statusBadge;
+                if (currentRequest.status === 'approved') {
+                    statusBadge = '<span class="status-badge status-completed">Done</span>';
+                    cls = 'completed';
+                } else if (s.id < currentRequest.currentStage) {
+                    statusBadge = '<span class="status-badge status-completed">Done</span>';
+                } else if (s.id === currentRequest.currentStage) {
+                    statusBadge = '<span class="status-badge status-active">Active</span>';
+                } else {
+                    statusBadge = '<span class="status-badge status-pending">Pending</span>';
+                }
+
                 return `<div class="flow-step" onclick="goToStage(${s.id})">
-                    <div class="flow-step-box ${cls}"><div class="step-num">Stage ${s.id <= 3 ? s.id : s.id <= 5 ? '4' + (s.id === 4 ? 'A' : 'B') : s.id - 1}</div><div class="step-name">${s.short}</div>${statusBadge}</div>
+                    <div class="flow-step-box ${cls}"><div class="step-num">Stage ${s.num}</div><div class="step-name">${s.short}</div>${statusBadge}</div>
                 </div>${arrow}`;
             }).join('');
         }
@@ -960,29 +1198,207 @@
         function goToStage(stageId) {
             currentStage = stageId;
             document.querySelectorAll('.stage-panel').forEach(p => p.classList.remove('active'));
-            document.getElementById('stage-' + stageId).classList.add('active');
+            const panel = document.getElementById('stage-' + stageId);
+            if (panel) panel.classList.add('active');
             renderFlowBar();
             renderStageActions();
+            // Render quorum tracker and approval summary for approval stages
+            if (APPROVAL_STAGES.includes(stageId)) {
+                renderQuorumTracker(stageId);
+                renderApprovalSummary(stageId);
+            }
+            // Update IOC status when viewing IOC stage
+            if (stageId === 6) {
+                updateIOCStatus();
+            }
         }
+
         function renderStageActions() {
             const bar = document.getElementById('stage-actions-bar');
             const isActive = currentStage === currentRequest.currentStage;
-            const isFinalStage = currentStage === 7;
             const isFirstStage = currentStage === 1;
+            const isNOC = currentStage === 4;
+            const isSOC = currentStage === 5;
+            const isIOC = currentStage === 6;
+            const isApprovalStage = APPROVAL_STAGES.includes(currentStage);
+            const isFinalStage = currentStage === 9;
 
             if (currentRequest.status === 'approved') {
-                bar.innerHTML = '<span style="color:#5cb85c; font-weight:700;">&#9989; REQUEST APPROVED — VM Provisioning Proceeds</span>';
+                bar.innerHTML = '<span style="color:#5cb85c; font-weight:700;">&#9989; REQUEST APPROVED -- VM Provisioning Proceeds</span>';
                 return;
             }
             if (!isActive) {
                 bar.innerHTML = '<span style="color:#7a8a99;">Viewing completed stage (read-only)</span>';
                 return;
             }
-            let html = '<button class="btn btn-save" onclick="saveForm()">Save Draft</button>';
-            if (!isFirstStage) html += '<button class="btn btn-reject" onclick="openRejectModal()">Reject</button>';
-            if (isFinalStage) html += '<button class="btn btn-approve" onclick="publishForm()">&#9989; Approve</button>';
-            else html += '<button class="btn btn-publish" onclick="publishForm()">Publish &#9654;</button>';
+
+            let html = '';
+
+            if (isNOC || isSOC) {
+                // NOC and SOC: Save only (no Publish) -- IOC publishes
+                html += '<button class="btn btn-save" onclick="saveForm()">Save</button>';
+                if (!isFirstStage) html += '<button class="btn btn-reject" onclick="openRejectModal()">Reject</button>';
+            } else if (isIOC) {
+                // IOC Manager: Publish & Submit or Reject
+                html += '<button class="btn btn-save" onclick="saveForm()">Save Draft</button>';
+                html += '<button class="btn btn-reject" onclick="openRejectModal()">Reject &amp; Send Back</button>';
+                const nocSaved = isNOCSaved();
+                const socSaved = isSOCSaved();
+                const canPublish = nocSaved && socSaved;
+                html += `<button class="btn btn-publish" onclick="publishForm()" ${canPublish ? '' : 'disabled'}>Publish &amp; Submit for Approval &#9654;</button>`;
+            } else if (isApprovalStage) {
+                // Approval stages
+                html += '<button class="btn btn-save" onclick="saveForm()">Save Draft</button>';
+                html += '<button class="btn btn-reject" onclick="openRejectModal()">Reject</button>';
+                html += '<button class="btn btn-approve" onclick="approveStage()">&#9989; Approve</button>';
+            } else {
+                // Normal stages (Request, SysAdmin, DataCenter)
+                html += '<button class="btn btn-save" onclick="saveForm()">Save Draft</button>';
+                if (!isFirstStage) html += '<button class="btn btn-reject" onclick="openRejectModal()">Reject</button>';
+                html += '<button class="btn btn-publish" onclick="publishForm()">Publish &#9654;</button>';
+            }
+
             bar.innerHTML = html;
+        }
+
+        // ---- NOC/SOC saved status helpers ----
+        function isNOCSaved() {
+            if (!currentRequest || !currentRequest.data) return false;
+            // Check if at least IP address has been filled
+            return !!(currentRequest.data.ipAddress || currentRequest.data.vlanId || currentRequest.data.gateway);
+        }
+        function isSOCSaved() {
+            if (!currentRequest || !currentRequest.data) return false;
+            return !!(currentRequest.data.vdom || (currentRequest.policies && currentRequest.policies.length > 0));
+        }
+        function updateIOCStatus() {
+            const nocSaved = isNOCSaved();
+            const socSaved = isSOCSaved();
+            const nocDot = document.getElementById('ioc-noc-dot');
+            const socDot = document.getElementById('ioc-soc-dot');
+            const nocText = document.getElementById('ioc-noc-status');
+            const socText = document.getElementById('ioc-soc-status');
+            if (nocDot) { nocDot.className = 'ioc-dot ' + (nocSaved ? 'saved' : 'not-saved'); }
+            if (socDot) { socDot.className = 'ioc-dot ' + (socSaved ? 'saved' : 'not-saved'); }
+            if (nocText) { nocText.textContent = nocSaved ? 'Saved' : 'Not Saved'; }
+            if (socText) { socText.textContent = socSaved ? 'Saved' : 'Not Saved'; }
+        }
+
+        // ---- Quorum tracker ----
+        function renderQuorumTracker(stageId) {
+            const container = document.getElementById('quorum-tracker-' + stageId);
+            if (!container) return;
+            const approvals = currentRequest.approvals || {};
+            let approvedCount = 0;
+            let rejectedCount = 0;
+
+            let itemsHtml = APPROVAL_STAGES.map(sid => {
+                const name = APPROVAL_NAMES[sid];
+                const status = approvals[sid] || 'pending';
+                if (status === 'approved') approvedCount++;
+                if (status === 'rejected') rejectedCount++;
+                return `<div class="quorum-item">
+                    <div class="quorum-dot ${status}"></div>
+                    <div>
+                        <div class="quorum-label">${name}</div>
+                        <div class="quorum-status ${status}">${status}</div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            const quorumMet = approvedCount >= 2;
+            let resultHtml = '';
+            if (quorumMet) {
+                resultHtml = '<div class="quorum-result met">QUORUM REACHED (2 of 3 approved) -- VM Provisioning Approved</div>';
+            } else {
+                resultHtml = `<div class="quorum-result not-met">Quorum: ${approvedCount} of 3 approved (need 2 of 3)</div>`;
+            }
+
+            container.innerHTML = `<div class="quorum-tracker">
+                <div class="quorum-title">Approval Quorum Tracker (2 of 3 required)</div>
+                <div class="quorum-items">${itemsHtml}</div>
+                ${resultHtml}
+            </div>`;
+        }
+
+        // ---- Approval summary (collapsible) ----
+        function renderApprovalSummary(stageId) {
+            const container = document.getElementById('approval-summary-' + stageId);
+            if (!container) return;
+            const d = currentRequest.data || {};
+
+            let html = `<div class="collapsible-summary">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <h4>Review: All Previous Stages Data</h4>
+                    <span class="collapsible-arrow">&#9660;</span>
+                </div>
+                <div class="collapsible-body">`;
+
+            // Stage 1
+            html += '<div class="summary-stage-title">Stage 1: Request</div>';
+            [['Server Name','serverName'],['Application Name','appName'],['Purpose','purpose'],['Language/Framework','langFramework'],['Environment','environment'],['Concurrent Users','concurrentUsers'],['DBMS','dbms'],['GIT Repo','gitRepo'],['Access Group','accessGroup'],['SLA','sla'],['FQDN Suggestion','fqdnSuggestion'],['Auth Method','authMethod']].forEach(([lbl,key]) => {
+                html += `<div class="summary-field"><span class="sf-label">${lbl}:</span><span class="sf-value">${d[key] || '--'}</span></div>`;
+            });
+
+            // Stage 2
+            html += '<div class="summary-stage-title">Stage 2: Sys Admin</div>';
+            [['Sensitivity Level','sensitivityLevel'],['Resource Group','resourceGroup'],['Web Server','webServer'],['Database','database'],['Hostname','hostname']].forEach(([lbl,key]) => {
+                html += `<div class="summary-field"><span class="sf-label">${lbl}:</span><span class="sf-value">${d[key] || '--'}</span></div>`;
+            });
+            if (currentRequest.services && currentRequest.services.length > 0) {
+                const svcList = currentRequest.services.map(s => `${s.port}/${s.protocol} (${s.serviceName})`).join(', ');
+                html += `<div class="summary-field"><span class="sf-label">Services:</span><span class="sf-value">${svcList}</span></div>`;
+            }
+
+            // Stage 3
+            html += '<div class="summary-stage-title">Stage 3: Data Center</div>';
+            [['Hardware','hardware'],['Uplink Speed','uplinkSpeed'],['Host Type','hostType'],['DC Port','dcPort'],['Location DC','locationDC'],['Rack Row','rackRow'],['Rack U#','rackU'],['Cluster','cluster']].forEach(([lbl,key]) => {
+                html += `<div class="summary-field"><span class="sf-label">${lbl}:</span><span class="sf-value">${d[key] || '--'}</span></div>`;
+            });
+
+            // Stage 4A: NOC
+            html += '<div class="summary-stage-title">Stage 4A: NOC</div>';
+            [['IP Address','ipAddress'],['Subnet Mask','subnetMask'],['VLAN ID','vlanId'],['Gateway','gateway'],['NOC Port','nocPort'],['VIP','vip'],['Virtual IP','virtualIP'],['Virtual Port','virtualPort'],['Virtual FQDN','virtualFQDN']].forEach(([lbl,key]) => {
+                html += `<div class="summary-field"><span class="sf-label">${lbl}:</span><span class="sf-value">${d[key] || '--'}</span></div>`;
+            });
+            if (currentRequest.networkPaths && currentRequest.networkPaths.length > 0) {
+                currentRequest.networkPaths.forEach((np, i) => {
+                    html += `<div class="summary-field"><span class="sf-label">Network Path ${i+1}:</span><span class="sf-value">Switch: ${np.switchName||'--'}, Port: ${np.port||'--'}, Link Speed: ${np.linkSpeed||'--'}</span></div>`;
+                });
+            }
+
+            // Stage 4B: SOC
+            html += '<div class="summary-stage-title">Stage 4B: SOC</div>';
+            html += `<div class="summary-field"><span class="sf-label">VDOM:</span><span class="sf-value">${d.vdom || '--'}</span></div>`;
+            if (currentRequest.policies && currentRequest.policies.length > 0) {
+                currentRequest.policies.forEach((p, i) => {
+                    html += `<div class="summary-field"><span class="sf-label">Policy ${i+1}:</span><span class="sf-value">${p.name||'--'} | ${p.srcIp||'--'} -> ${p.dstIp||'--'} | Action: ${p.action||'--'}</span></div>`;
+                });
+            }
+
+            // Stage 5: IOC
+            html += '<div class="summary-stage-title">Stage 5: IOC Manager</div>';
+            html += `<div class="summary-field"><span class="sf-label">IOC Comments:</span><span class="sf-value">${d.iocComments || '--'}</span></div>`;
+
+            // Previous approval comments if any
+            if (d.cisoComments) {
+                html += '<div class="summary-stage-title">Stage 6: CISO</div>';
+                html += `<div class="summary-field"><span class="sf-label">CISO Comments:</span><span class="sf-value">${d.cisoComments}</span></div>`;
+            }
+            if (d.ctoComments) {
+                html += '<div class="summary-stage-title">Stage 7: CTO</div>';
+                html += `<div class="summary-field"><span class="sf-label">CTO Comments:</span><span class="sf-value">${d.ctoComments}</span></div>`;
+            }
+
+            html += '</div></div>';
+            container.innerHTML = html;
+        }
+
+        function toggleCollapsible(header) {
+            const body = header.nextElementSibling;
+            const arrow = header.querySelector('.collapsible-arrow');
+            body.classList.toggle('open');
+            arrow.innerHTML = body.classList.contains('open') ? '&#9650;' : '&#9660;';
         }
 
         // ---- Form data ----
@@ -992,18 +1408,144 @@
                 if (el.type === 'checkbox') currentRequest.data[el.dataset.field] = el.checked;
                 else currentRequest.data[el.dataset.field] = el.value;
             });
-            // Collect policies
             if (currentStage === 5) collectPolicies();
+            if (currentStage === 2) collectServices();
+            if (currentStage === 4) collectNetworkPaths();
         }
         function loadFormData() {
             STAGES.forEach(s => {
                 const panel = document.getElementById('stage-' + s.id);
+                if (!panel) return;
                 panel.querySelectorAll('[data-field]').forEach(el => {
                     const val = currentRequest.data[el.dataset.field];
                     if (el.type === 'checkbox') el.checked = val || false;
                     else el.value = val || '';
                 });
             });
+        }
+
+        // ---- Services (repeatable rows) ----
+        function addServiceRow(port, protocol, serviceName) {
+            serviceRowCount++;
+            const idx = serviceRowCount;
+            const container = document.getElementById('services-container');
+            const div = document.createElement('div');
+            div.className = 'repeatable-row';
+            div.id = 'svc-row-' + idx;
+            div.innerHTML = `
+                <div class="form-group">
+                    <label class="form-label">Port</label>
+                    <input type="text" class="form-input" data-svc="${idx}" data-svcfield="port" placeholder="e.g. 443" value="${port || ''}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Protocol</label>
+                    <select class="form-select" data-svc="${idx}" data-svcfield="protocol">
+                        <option value="TCP" ${protocol === 'TCP' ? 'selected' : ''}>TCP</option>
+                        <option value="UDP" ${protocol === 'UDP' ? 'selected' : ''}>UDP</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Service Name</label>
+                    <input type="text" class="form-input" data-svc="${idx}" data-svcfield="serviceName" placeholder="e.g. HTTPS" value="${serviceName || ''}">
+                </div>
+                <button class="btn-remove-row" onclick="removeServiceRow(${idx})">Remove</button>`;
+            container.appendChild(div);
+        }
+        function removeServiceRow(idx) {
+            const el = document.getElementById('svc-row-' + idx);
+            if (el) el.remove();
+        }
+        function collectServices() {
+            const services = [];
+            document.querySelectorAll('#services-container .repeatable-row').forEach(row => {
+                const svc = {};
+                row.querySelectorAll('[data-svcfield]').forEach(el => {
+                    svc[el.dataset.svcfield] = el.value;
+                });
+                if (svc.port || svc.serviceName) services.push(svc);
+            });
+            currentRequest.services = services;
+        }
+        function loadServices() {
+            const container = document.getElementById('services-container');
+            container.innerHTML = '';
+            serviceRowCount = 0;
+            if (currentRequest.services && currentRequest.services.length > 0) {
+                currentRequest.services.forEach(s => {
+                    addServiceRow(s.port, s.protocol, s.serviceName);
+                });
+            }
+        }
+
+        // ---- Network Paths (repeatable rows) ----
+        function addNetworkPath(switchName, port, linkSpeed) {
+            networkPathCount++;
+            const idx = networkPathCount;
+            const container = document.getElementById('network-paths-container');
+            const div = document.createElement('div');
+            div.className = 'repeatable-row';
+            div.id = 'np-row-' + idx;
+            div.innerHTML = `
+                <div class="form-group">
+                    <label class="form-label">Switch Name</label>
+                    <input type="text" class="form-input" data-np="${idx}" data-npfield="switchName" placeholder="Switch name" value="${switchName || ''}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Port</label>
+                    <input type="text" class="form-input" data-np="${idx}" data-npfield="port" placeholder="Port" value="${port || ''}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Link Speed</label>
+                    <select class="form-select" data-np="${idx}" data-npfield="linkSpeed">
+                        <option value="">-- Select --</option>
+                        <option value="1Gb" ${linkSpeed === '1Gb' ? 'selected' : ''}>1 Gb</option>
+                        <option value="10Gb" ${linkSpeed === '10Gb' ? 'selected' : ''}>10 Gb</option>
+                        <option value="40Gb" ${linkSpeed === '40Gb' ? 'selected' : ''}>40 Gb</option>
+                        <option value="100Gb" ${linkSpeed === '100Gb' ? 'selected' : ''}>100 Gb</option>
+                    </select>
+                </div>
+                <button class="btn-remove-row" onclick="removeNetworkPath(${idx})">Remove</button>`;
+            container.appendChild(div);
+        }
+        function removeNetworkPath(idx) {
+            const el = document.getElementById('np-row-' + idx);
+            if (el) el.remove();
+        }
+        function collectNetworkPaths() {
+            const paths = [];
+            document.querySelectorAll('#network-paths-container .repeatable-row').forEach(row => {
+                const np = {};
+                row.querySelectorAll('[data-npfield]').forEach(el => {
+                    np[el.dataset.npfield] = el.value;
+                });
+                if (np.switchName || np.port) paths.push(np);
+            });
+            currentRequest.networkPaths = paths;
+        }
+        function loadNetworkPaths() {
+            const container = document.getElementById('network-paths-container');
+            container.innerHTML = '';
+            networkPathCount = 0;
+            if (currentRequest.networkPaths && currentRequest.networkPaths.length > 0) {
+                currentRequest.networkPaths.forEach(np => {
+                    addNetworkPath(np.switchName, np.port, np.linkSpeed);
+                });
+            }
+        }
+
+        // ---- Resource Group Summary ----
+        function updateResourceSummary() {
+            const sel = document.querySelector('[data-field="resourceGroup"]');
+            const summaryDiv = document.getElementById('resource-summary');
+            const summaryText = document.getElementById('resource-summary-text');
+            if (!sel || !summaryDiv || !summaryText) return;
+            const val = sel.value;
+            if (val && RESOURCE_SPECS[val]) {
+                summaryText.textContent = val + ' -- ' + RESOURCE_SPECS[val];
+                summaryDiv.style.display = 'block';
+            } else {
+                summaryDiv.style.display = 'none';
+            }
         }
 
         // ---- Policies ----
@@ -1071,27 +1613,68 @@
             }
         }
 
-        // ---- Save / Publish / Reject ----
+        // ---- Save / Publish / Approve / Reject ----
         function saveForm() {
             collectFormData();
             updateRequest(currentRequest);
             showToast('Draft saved', 'success');
+            // Refresh IOC status if viewing IOC
+            if (currentStage === 6) {
+                updateIOCStatus();
+                renderStageActions();
+            }
         }
         function publishForm() {
             collectFormData();
-            if (currentStage === 7) {
-                currentRequest.status = 'approved';
-                updateRequest(currentRequest);
-                renderFlowBar();
-                renderStageActions();
-                showToast('Request APPROVED — VM provisioning proceeds!', 'success');
-                return;
+
+            // IOC stage: check NOC+SOC saved
+            if (currentStage === 6) {
+                if (!isNOCSaved() || !isSOCSaved()) {
+                    showToast('Cannot publish: Both NOC and SOC must be saved first', 'error');
+                    return;
+                }
             }
+
             currentRequest.currentStage = currentStage + 1;
             updateRequest(currentRequest);
             goToStage(currentStage + 1);
             showToast('Published to ' + STAGES[currentStage - 1].name, 'success');
         }
+
+        function approveStage() {
+            collectFormData();
+            currentRequest.approvals = currentRequest.approvals || {};
+            currentRequest.approvals[currentStage] = 'approved';
+
+            // Check quorum: 2 of 3
+            let approvedCount = APPROVAL_STAGES.filter(s => currentRequest.approvals[s] === 'approved').length;
+
+            if (approvedCount >= 2) {
+                // Quorum met -- full approval
+                currentRequest.status = 'approved';
+                updateRequest(currentRequest);
+                renderFlowBar();
+                renderStageActions();
+                renderQuorumTracker(currentStage);
+                showToast('QUORUM REACHED (2 of 3) -- Request APPROVED -- VM provisioning proceeds!', 'success');
+                return;
+            }
+
+            // Not yet quorum -- advance to next approval stage if possible
+            if (currentStage < 9) {
+                currentRequest.currentStage = currentStage + 1;
+                updateRequest(currentRequest);
+                goToStage(currentStage + 1);
+                showToast('Approved by ' + APPROVAL_NAMES[currentStage] + '. Moving to ' + STAGES[currentStage - 1].name + '. (' + approvedCount + '/2 quorum)', 'success');
+            } else {
+                // Last approval stage but quorum not met
+                updateRequest(currentRequest);
+                renderQuorumTracker(currentStage);
+                renderStageActions();
+                showToast('Approved by ' + APPROVAL_NAMES[currentStage] + '. Quorum: ' + approvedCount + '/2 needed.', 'info');
+            }
+        }
+
         function openRejectModal() {
             document.getElementById('reject-modal').classList.add('show');
             document.getElementById('reject-reason').value = '';
@@ -1105,12 +1688,20 @@
             collectFormData();
             currentRequest.rejections = currentRequest.rejections || [];
             currentRequest.rejections.push({ stage: currentStage, reason, date: new Date().toLocaleString() });
+
+            // If approval stage, mark as rejected in approvals
+            if (APPROVAL_STAGES.includes(currentStage)) {
+                currentRequest.approvals = currentRequest.approvals || {};
+                currentRequest.approvals[currentStage] = 'rejected';
+            }
+
+            // Send back to previous stage
             currentRequest.currentStage = currentStage - 1;
             currentRequest.status = 'in_progress';
             updateRequest(currentRequest);
             closeRejectModal();
             goToStage(currentStage - 1);
-            showToast('Rejected — sent back to ' + STAGES[currentStage - 2].name, 'error');
+            showToast('Rejected -- sent back to ' + STAGES[currentStage - 2].name, 'error');
         }
 
         // ---- Export ----
@@ -1121,7 +1712,7 @@
             text += '  VM PROVISIONING REQUEST: ' + currentRequest.id + '\n';
             text += '  Created: ' + currentRequest.created + '\n';
             text += '  Status: ' + currentRequest.status.toUpperCase() + '\n';
-            text += '  Current Stage: ' + STAGES[currentRequest.currentStage - 1].name + '\n';
+            text += '  Current Stage: ' + STAGES[Math.min(currentRequest.currentStage - 1, STAGES.length - 1)].name + '\n';
             text += '========================================\n\n';
 
             const fieldLabels = {
@@ -1130,17 +1721,16 @@
                 concurrentUsers: '# Expected Concurrent Users', dbms: 'DBMS', gitRepo: 'GIT Repo',
                 accessGroup: 'Access Group', sla: 'SLA', fqdnSuggestion: 'FQDN Suggestion',
                 authMethod: 'Authentication Method', sensitivityLevel: 'Sensitivity Level',
-                serverResources: 'Server Resources', webServer: 'Web Server', database: 'Database',
+                resourceGroup: 'Resource Group', webServer: 'Web Server', database: 'Database',
                 hostname: 'Hostname', hardware: 'Hardware', uplinkSpeed: 'Uplink Speed',
                 hostType: 'Host Type', dcPort: 'DC Port', locationDC: 'Location DC',
                 rackRow: 'Rack Row', rackU: 'Rack U#', cluster: 'Cluster',
                 ipAddress: 'IP Address', subnetMask: 'Subnet Mask', vlanId: 'VLAN ID',
-                gateway: 'Gateway', nocPort: 'NOC Port', vip: 'Virtual IP', virtualPort: 'Virtual Port',
-                virtualFQDN: 'Virtual FQDN', netSwitch: 'Network Switch', netFirewall: 'Network Firewall',
-                vdom: 'VDOM', iocApproval: 'IOC Manager Approval',
-                cisoComments: 'CISO Comments', opsComments: 'Ops Manager Comments'
+                gateway: 'Gateway', nocPort: 'NOC Port', vip: 'VIP', virtualIP: 'Virtual IP',
+                virtualPort: 'Virtual Port', virtualFQDN: 'Virtual FQDN',
+                vdom: 'VDOM', iocComments: 'IOC Manager Comments',
+                cisoComments: 'CISO Comments', ctoComments: 'CTO Comments', opsComments: 'Ops Manager Comments'
             };
-            const services = ['svc_https','svc_http','svc_ssh','svc_dns','svc_udp','svc_ftp','svc_smtp','svc_rdp'];
 
             // Stage 1
             text += '--- STAGE 1: REQUEST ---\n';
@@ -1150,11 +1740,17 @@
 
             // Stage 2
             text += '\n--- STAGE 2: SYS ADMIN ---\n';
-            ['sensitivityLevel','serverResources','webServer','database','hostname'].forEach(f => {
+            ['sensitivityLevel','resourceGroup','webServer','database','hostname'].forEach(f => {
                 text += '  ' + (fieldLabels[f]||f) + ': ' + (currentRequest.data[f] || '') + '\n';
             });
-            const enabledSvc = services.filter(s => currentRequest.data[s]).map(s => s.replace('svc_','').toUpperCase());
-            text += '  Services: ' + (enabledSvc.join(', ') || 'None') + '\n';
+            if (currentRequest.services && currentRequest.services.length > 0) {
+                text += '  Services:\n';
+                currentRequest.services.forEach((s, i) => {
+                    text += '    ' + (i+1) + '. Port: ' + (s.port||'') + ' / Protocol: ' + (s.protocol||'TCP') + ' / Name: ' + (s.serviceName||'') + '\n';
+                });
+            } else {
+                text += '  Services: None\n';
+            }
 
             // Stage 3
             text += '\n--- STAGE 3: DATA CENTER ---\n';
@@ -1164,9 +1760,15 @@
 
             // Stage 4A
             text += '\n--- STAGE 4A: NOC ---\n';
-            ['ipAddress','subnetMask','vlanId','gateway','nocPort','vip','virtualPort','virtualFQDN','netSwitch','netFirewall'].forEach(f => {
+            ['ipAddress','subnetMask','vlanId','gateway','nocPort','vip','virtualIP','virtualPort','virtualFQDN'].forEach(f => {
                 text += '  ' + (fieldLabels[f]||f) + ': ' + (currentRequest.data[f] || '') + '\n';
             });
+            if (currentRequest.networkPaths && currentRequest.networkPaths.length > 0) {
+                text += '  Network Paths:\n';
+                currentRequest.networkPaths.forEach((np, i) => {
+                    text += '    ' + (i+1) + '. Switch: ' + (np.switchName||'') + ' / Port: ' + (np.port||'') + ' / Link Speed: ' + (np.linkSpeed||'') + '\n';
+                });
+            }
 
             // Stage 4B
             text += '\n--- STAGE 4B: SOC ---\n';
@@ -1185,14 +1787,31 @@
                     text += '    Security Profile: ' + (p.secProfile||'') + '\n';
                 });
             }
-            text += '  IOC Manager Approval: ' + (currentRequest.data.iocApproval || '') + '\n';
 
-            // Stage 5 & 6
-            text += '\n--- STAGE 5: CISO APPROVAL ---\n';
+            // Stage 5: IOC
+            text += '\n--- STAGE 5: IOC MANAGER ---\n';
+            text += '  IOC Comments: ' + (currentRequest.data.iocComments || '') + '\n';
+
+            // Stage 6: CISO
+            text += '\n--- STAGE 6: CISO APPROVAL ---\n';
             text += '  Comments: ' + (currentRequest.data.cisoComments || '') + '\n';
+            text += '  Decision: ' + (currentRequest.approvals[7] || 'Pending') + '\n';
 
-            text += '\n--- STAGE 6: OPS MANAGER APPROVAL ---\n';
+            // Stage 7: CTO
+            text += '\n--- STAGE 7: CTO APPROVAL ---\n';
+            text += '  Comments: ' + (currentRequest.data.ctoComments || '') + '\n';
+            text += '  Decision: ' + (currentRequest.approvals[8] || 'Pending') + '\n';
+
+            // Stage 8: Ops
+            text += '\n--- STAGE 8: OPS MANAGER APPROVAL ---\n';
             text += '  Comments: ' + (currentRequest.data.opsComments || '') + '\n';
+            text += '  Decision: ' + (currentRequest.approvals[9] || 'Pending') + '\n';
+
+            // Quorum
+            const approvedCount = APPROVAL_STAGES.filter(s => (currentRequest.approvals || {})[s] === 'approved').length;
+            text += '\n--- APPROVAL QUORUM ---\n';
+            text += '  Approved: ' + approvedCount + ' of 3 (need 2)\n';
+            text += '  Quorum Met: ' + (approvedCount >= 2 ? 'YES' : 'NO') + '\n';
 
             // Rejections
             if (currentRequest.rejections && currentRequest.rejections.length > 0) {
