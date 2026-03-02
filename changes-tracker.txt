@@ -1,0 +1,44 @@
+VM WORKFLOW - CHANGES TRACKER
+==============================
+Date: 2026-03-01
+Based on: Nigel Brown feedback
+
+STATUS KEY: [TODO] [IN PROGRESS] [DONE] [TESTED]
+
+=== SYS ADMIN CHANGES ===
+[DONE] 1. Server Resources summary - shows vCPU, RAM, HDD when group selected
+         Defined by DC Team in Admin Settings screen
+[DONE] 2. Fix database list - now: New Database, Existing Database, None
+[DONE] 3. Add "Database Name" field to Sys Admin
+[DONE] 4. Services - addable list with 3 fields: Protocol (TCP/UDP), Port #, Service Name
+
+=== DATA CENTER CHANGES ===
+[DONE] 5. DC Admin screen - define resource groups (Micro, Small, etc.) with vCPU, RAM, HDD
+[DONE] 6. DC Admin screen - define clusters
+
+=== NOC CHANGES ===
+[DONE] 7. Network Path - addable list: Device Name, Port, Link Speed
+
+=== SOC CHANGES ===
+[DONE] 8. Policy Action - only "Accept" or "Reject"
+[DONE] 9. Security Profile - multi-select from admin-defined list per policy
+[DONE] 10. SOC gets Save and Reject only (no Publish - IOC Manager publishes)
+
+=== IOC MANAGER CHANGES ===
+[DONE] 11. IOC Manager sees NOC + SOC summary
+[DONE] 12. Only IOC Manager can submit/publish NOC+SOC to approval
+[DONE] 13. IOC Manager has comment field
+
+=== APPROVAL CHANGES ===
+[DONE] 14. Approvers: CISO, CTO, Ops Officer - any 2 of 3 can approve
+[DONE] 15. Approvers see full summary of all submitted info
+[DONE] 16. Each approver has Approve/Reject dropdown
+
+=== QUEUE / WORKFLOW ===
+[DONE] 17. Request list acts as pending queue (shows stage + status per request)
+[DONE] 18. Each request shows current stage and can be opened/updated
+
+=== ADMIN SETTINGS ===
+[DONE] 19. Admin screen with tabs: Resource Groups, Clusters, Security Profiles
+[DONE] 20. All admin items are addable/removable lists
+[DONE] 21. Admin data populates dropdowns throughout the workflow
