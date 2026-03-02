@@ -1629,11 +1629,15 @@
             collectFormData();
             updateRequest(currentRequest);
             if (currentStage === 4) {
-                showToast('NOC details saved. Now fill SOC details.', 'success');
+                showToast('NOC details saved. Moving to SOC...', 'success');
                 renderFlowBar();
+                setTimeout(() => goToStage(5), 800); // Auto-navigate to SOC
+                return;
             } else if (currentStage === 5) {
-                showToast('SOC details saved. IOC Manager can now review.', 'success');
+                showToast('SOC details saved. Moving to IOC Manager...', 'success');
                 renderFlowBar();
+                setTimeout(() => goToStage(6), 800); // Auto-navigate to IOC
+                return;
             } else {
                 showToast('Draft saved', 'success');
             }
